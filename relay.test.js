@@ -19,9 +19,13 @@ async function ready() {
   }
   throw new Error('Relay did not start');
 }
-after(() => {
-  if (activeChild && activeChild.exitCode === null) activeChild.kill('SIGTERM');
-  fs.rmSync(dir, { recursive: true, force: true });
+after(async () => {
+  if (activeChild && activeChild.exitCode === null) {
+    const exited = new Promise(resolve => activeChild.once('exit', resolve));
+    activeChild.kill('SIGTERM');
+    await Promise.race([exited, new Promise(resolve => setTimeout(resolve, 3000))]);
+  }
+  fs.rmSync(dir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
 });
 
 test('health and static app are served', async () => {
