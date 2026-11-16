@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.3.0
+
+- Sender-name label above incoming messages removed (the .who CSS is kept, so it can be switched back on).
+- Glass UI layer: frosted chat header, home header, floating tab bar, floating composer, dialogs and reactions; glass name and day chips; gradient outgoing bubbles; ambient accent background; jump-to-latest button.
+- Swipe-to-reply rebuilt: frame-synced movement, rubber-band resistance, direction lock, reply icon that fills at the threshold, haptic tick, smooth spring-back, touchcancel handling, vertical scrolling stays native.
+- Fallbacks for no backdrop-filter, reduced transparency and reduced motion.
+
+## v1.2.0
+
+- History: IndexedDB mirror of local state, persistent-storage request, automatic restore, protection status in Settings.
+- Custom chat background (gallery upload, presets, dim control), more chat fonts, text size.
+- GIFs (up to 700 KB inline), stickers (built-in and your own), swipe right to reply.
+- Test cleanup retries (fixes flaky ENOTEMPTY).
+
 ## v1.1.0
 
 - Added voice and video calls (WebRTC, signalling through the encrypted relay; STUN only, no TURN).
