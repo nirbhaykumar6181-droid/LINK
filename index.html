@@ -81,57 +81,36 @@ label{font-size:13px;color:var(--m)}
 .b.stk{background:none!important;padding:0;font-size:60px;line-height:1.1}.b.stk .pic{width:150px;min-height:0;background:none;border-radius:0}.b.stk .meta{color:var(--m)}
 #dStk button{padding:2px}
 
-/* ===== Glass UI layer (v1.3) ===== */
-:root{--gl:rgba(255,255,255,.58);--gl2:rgba(255,255,255,.74);--gi:rgba(255,255,255,.55);--gb:rgba(255,255,255,.65);--gh:rgba(255,255,255,.9);--gs:0 8px 32px rgba(20,24,40,.12);--blur:saturate(180%) blur(18px)}
-.dark{--gl:rgba(28,30,36,.52);--gl2:rgba(24,26,31,.72);--gi:rgba(255,255,255,.07);--gb:rgba(255,255,255,.11);--gh:rgba(255,255,255,.16);--gs:0 8px 32px rgba(0,0,0,.45)}
-body{background:radial-gradient(60vmax 60vmax at 8% -5%,color-mix(in srgb,var(--a) 20%,transparent),transparent 60%),radial-gradient(55vmax 55vmax at 100% 105%,color-mix(in srgb,var(--a) 14%,#c026d3 10%),transparent 60%),var(--bg);background-attachment:fixed}
-/* name tab: compact glass chip that hugs the sender's name */
-.who,.day{background:var(--gl);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border:1px solid var(--gb);box-shadow:0 2px 10px rgba(0,0,0,.06),inset 0 1px 0 var(--gh);border-radius:12px;padding:2px 10px;color:var(--m);line-height:1.35}
-.who{font-weight:600;letter-spacing:.01em}
-/* glass header: messages scroll underneath it */
-#chat header{position:relative;z-index:5;background:var(--gl);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border-bottom:1px solid var(--gb);box-shadow:var(--gs)}
-#msgs{margin-top:-64px;padding-top:80px}
-#home header.big{position:relative;z-index:5;background:var(--gl);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border-bottom:1px solid var(--gb)}
-#home .pane{margin-top:-68px;padding-top:72px;padding-bottom:96px}
-/* floating glass tab bar */
-#home nav{position:absolute;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));border:1px solid var(--gb);border-radius:26px;background:var(--gl);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--gs),inset 0 1px 0 var(--gh);z-index:6;overflow:hidden}
+/* ===== Soft UI layer (v1.3.1): rounded corners, no blur, light on the GPU ===== */
+:root{--sh:0 2px 12px rgba(20,24,40,.08)}.dark{--sh:0 2px 12px rgba(0,0,0,.35)}
+.b{animation:none}
+/* rounded bars */
+#chat header{position:relative;z-index:2;background:var(--s);border-bottom:0;border-radius:0 0 24px 24px;box-shadow:var(--sh)}
+#home header.big{border:0}
+#home .pane{padding-bottom:96px}
+#home nav{position:absolute;left:14px;right:14px;bottom:calc(10px + env(safe-area-inset-bottom));border:1px solid var(--b);border-radius:26px;background:var(--s);box-shadow:var(--sh);overflow:hidden;z-index:6}
 #home nav .on{color:var(--a)}
-/* floating glass composer */
-#comp{margin:0 10px calc(8px + env(safe-area-inset-bottom));border:1px solid var(--gb);border-radius:28px;background:var(--gl);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--gs),inset 0 1px 0 var(--gh);padding:7px}
+#comp{margin:6px 10px 8px;border:1px solid var(--b);border-radius:28px;background:var(--s);box-shadow:var(--sh);padding:7px}
 .kb #comp{margin-bottom:6px}
-#comp textarea{background:var(--gi);border-color:transparent}
+#comp textarea{background:var(--in);border-color:transparent;border-radius:20px}
 #comp .ic{background:transparent;border-color:transparent}
-#rpb{margin:0 10px;border:1px solid var(--gb);border-radius:16px 16px 0 0;background:var(--gl);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur)}
-#q{background:var(--gi);border:1px solid var(--gb);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur)}
-.ic{background:var(--gi);border-color:var(--gb);transition:transform .12s ease}
-.ic:active,.pill:active,.pri:active,#comp .go:active{transform:scale(.93)}
-.pill{background:var(--gi);border:1px solid var(--gb)}.pill.p{background:var(--a);border-color:transparent}
-/* bubbles */
-.b.me{background:var(--a);background-image:linear-gradient(145deg,color-mix(in srgb,var(--a) 82%,#fff),var(--a) 55%,color-mix(in srgb,var(--a) 80%,#000));box-shadow:0 3px 12px color-mix(in srgb,var(--a) 28%,transparent)}
-.b:not(.me){box-shadow:0 1px 6px rgba(0,0,0,.06)}
-.hasbg .b:not(.me):not(.stk){background:var(--gl2)}
-.b.stk{box-shadow:none}
-.rx span{background:var(--gl2);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border-color:var(--gb)}
-/* frosted dialogs */
-dialog{background:var(--gl2);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border:1px solid var(--gb);border-bottom:0;box-shadow:0 -12px 40px rgba(0,0,0,.18)}
-dialog::backdrop{background:#0005;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
-dialog .sec,dialog input{background:var(--gi);border-color:var(--gb)}
-#dImg{background:#000;border:0}
-/* avatars, badges, rows */
-.av{box-shadow:0 0 0 2px var(--gb),0 4px 12px rgba(0,0,0,.18)}
-.badge{box-shadow:0 0 10px color-mix(in srgb,var(--a) 55%,transparent)}
-.row{transition:background .15s}
-/* jump-to-latest glass button */
-#jb{position:absolute;right:16px;bottom:calc(86px + env(safe-area-inset-bottom));width:42px;height:42px;border-radius:50%;display:grid;place-items:center;z-index:4;background:var(--gl);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border:1px solid var(--gb);box-shadow:var(--gs);opacity:0;transform:translateY(8px) scale(.9);pointer-events:none;transition:opacity .2s,transform .2s}
-#jb.on{opacity:1;transform:none;pointer-events:auto}
-/* swipe-to-reply */
+#rpb{margin:4px 10px 0;border:1px solid var(--b);border-radius:16px;background:var(--s)}
+/* rounded shapes */
+.b{border-radius:20px}.b:not(.me):not(.stk){border-bottom-left-radius:6px}.b.me:not(.stk){border-bottom-right-radius:6px}
+#rooms .row{width:calc(100% - 16px);margin:2px 8px;padding:10px 12px;border-radius:18px}
+.sec,.pri,input,select{border-radius:16px}
+.ic{border-radius:14px;transition:transform .12s}
+.ic:active,.pill:active,.pri:active{transform:scale(.95)}
+.day{background:var(--in);border-radius:12px;padding:2px 10px}
+.hasbg .day{background:var(--s)}
+dialog{border-radius:28px 28px 0 0}
+.link{border-radius:16px}
+/* jump-to-latest + swipe icon */
+#jb{position:absolute;right:16px;bottom:calc(84px + env(safe-area-inset-bottom));width:40px;height:40px;border-radius:50%;display:grid;place-items:center;z-index:4;background:var(--s);border:1px solid var(--b);box-shadow:var(--sh);opacity:0;pointer-events:none;transition:opacity .2s}
+#jb.on{opacity:1;pointer-events:auto}
 #msgs{touch-action:pan-y;overscroll-behavior:contain}
-#rpi{position:fixed;left:0;top:0;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;pointer-events:none;opacity:0;z-index:7;color:var(--m);background:var(--gl2);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border:1px solid var(--gb);box-shadow:var(--gs);will-change:transform,opacity;transition:background .15s,color .15s}
+#rpi{position:fixed;left:0;top:0;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;pointer-events:none;opacity:0;z-index:7;color:var(--m);background:var(--s);border:1px solid var(--b);box-shadow:var(--sh);will-change:transform,opacity;transition:background .15s,color .15s}
 #rpi.hit{background:var(--a);color:#fff;border-color:transparent}
-.b{backface-visibility:hidden}
-/* fallbacks */
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){:root{--gl:var(--s);--gl2:var(--bg);--gi:var(--in)}.dark{--gl:var(--s);--gl2:var(--bg);--gi:var(--in)}}
-@media (prefers-reduced-transparency:reduce){:root,.dark{--gl:var(--s);--gl2:var(--bg);--gi:var(--in);--blur:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body>
 

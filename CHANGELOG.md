@@ -1,11 +1,12 @@
 # Changelog
 
-## v1.3.0
+## v1.3.1
 
-- Sender-name label above incoming messages removed (the .who CSS is kept, so it can be switched back on).
-- Glass UI layer: frosted chat header, home header, floating tab bar, floating composer, dialogs and reactions; glass name and day chips; gradient outgoing bubbles; ambient accent background; jump-to-latest button.
-- Swipe-to-reply rebuilt: frame-synced movement, rubber-band resistance, direction lock, reply icon that fills at the threshold, haptic tick, smooth spring-back, touchcancel handling, vertical scrolling stays native.
-- Fallbacks for no backdrop-filter, reduced transparency and reduced motion.
+- Less glitchy: removed all blur/backdrop effects, the fixed background gradient, glow shadows and the per-message entry animation that flickered on every update.
+- Rounded look: rounded header, floating tab bar and composer, rounded chat rows, bubbles with a soft tail corner, rounded dialogs, buttons and inputs.
+- Sender-name label above incoming messages removed (the .who CSS is kept).
+- Swipe-to-reply rebuilt: frame-synced movement, rubber-band resistance, direction lock, reply icon, haptic tick, smooth spring-back.
+- Jump-to-latest button.
 
 ## v1.2.0
 
