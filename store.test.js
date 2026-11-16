@@ -126,3 +126,18 @@ test('backup snapshot is a restorable database and old backups are pruned', () =
   assert.equal(r.after(R, 0, 10).length, 2);
   r.close(); s.close(); rm(d); rm(rd);
 });
+
+
+test('friend requests can be sent, accepted, listed, and reverse requests auto-accept', () => {
+  const d = tmp(); const s = openStore({ dataDir: d });
+  assert.equal(s.registerProfile('account_001', 'alice_01', 'Alice', 'PUB_A').ok, true);
+  assert.equal(s.registerProfile('account_002', 'bobby_02', 'Bobby', 'PUB_B').ok, true);
+  assert.deepEqual(s.sendFriendRequest('account_001', 'account_002'), { ok: true });
+  let b = s.friendsFor('account_002');
+  assert.equal(b.length, 1); assert.equal(b[0].status, 'pending'); assert.equal(b[0].fromId, 'account_001');
+  assert.equal(s.respondFriendRequest('account_002', 'account_001', true), true);
+  assert.equal(s.friendsFor('account_001')[0].status, 'accepted');
+  assert.equal(s.isFriend('account_001', 'account_002'), true);
+  assert.equal(s.sendFriendRequest('account_002', 'account_001').code, 'friends');
+  s.close(); rm(d);
+});
