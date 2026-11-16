@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.1.0
+
+- Added voice and video calls (WebRTC, signalling through the encrypted relay; STUN only, no TURN).
+- Replaced emoji icons with line icons; added Chats/Settings tab icons and swipe to switch tabs.
+
 ## v1.0.0 beta
 
 - Removed third-party Google Fonts requests to reduce external requests and improve privacy.

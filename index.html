@@ -35,7 +35,7 @@ button:disabled{cursor:not-allowed;opacity:.45}
 .lbl{padding:14px 20px 4px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--m)}
 .pane{flex:1;overflow:auto;display:none}.pane.on{display:block}
 nav{display:flex;border-top:1px solid var(--b)}
-nav button{flex:1;padding:14px;color:var(--m);font-size:14px}nav .on{color:var(--t);font-weight:600}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 14px 12px;color:var(--m);font-size:12px}nav .on{color:var(--t);font-weight:600}
 .badge{background:var(--a);color:#fff;border-radius:10px;font-size:12px;padding:1px 7px}
 #msgs{flex:1;overflow:auto;padding:16px 16px 8px;display:flex;flex-direction:column;gap:3px;-webkit-user-select:none;user-select:none}
 .b{font-family:var(--cf,inherit);max-width:80%;padding:9px 13px;border-radius:18px;background:var(--in);align-self:flex-start;overflow-wrap:anywhere;white-space:pre-wrap;animation:pop .15s ease-out}
@@ -66,13 +66,24 @@ label{font-size:13px;color:var(--m)}
 .em{padding:64px 32px;text-align:center;display:grid;gap:12px;justify-items:center}
 .doc{display:flex;gap:10px;align-items:center;text-decoration:none;color:inherit}.doc b{font-size:14px}.ed{opacity:.7;font-size:11px}#sb{display:none;padding:8px 16px;border-bottom:1px solid var(--b)}.fwl{font-size:12px;opacity:.7;margin-bottom:2px}
 #cav,#ct{cursor:pointer}
+#chat header{gap:6px;padding:10px 12px}#chat header .ic{width:36px;height:36px}#ct{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#comp .ic,#comp .go,#chat header .ic{display:grid;place-items:center}.pane.on{animation:fi .18s ease-out}@keyframes fi{from{opacity:.4}}
+#call{position:fixed;top:var(--vt,0);left:0;right:0;height:var(--vh,100dvh);z-index:60;background:#0b0c0e;color:#fff;display:none;flex-direction:column;align-items:center;justify-content:center}
+#call video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
+#call.voice video{opacity:0;width:1px;height:1px}
+#call.video.live #ci{display:none}
+#call #lv{inset:auto 16px 130px auto;width:96px;height:136px;border-radius:14px;z-index:2}
+#call.voice #lv{inset:0;width:1px;height:1px}
+#ci{position:relative;z-index:1;display:grid;gap:10px;justify-items:center;text-align:center}
+#cbar{position:absolute;bottom:calc(32px + env(safe-area-inset-bottom));display:flex;gap:18px;z-index:3}
+.cb{width:62px;height:62px;border-radius:50%;background:#ffffff2b;color:#fff;display:none;place-items:center}
 </style></head><body>
 
 <section id="wel" class="scr" style="padding:32px 24px;justify-content:space-between">
 <div style="margin-top:5vh"><div style="font-family:var(--df);font-weight:var(--dw);font-size:24px;letter-spacing:.4em">LINK</div>
 <h1 style="font-size:36px;line-height:1.1;margin:26px 0 10px;flex:none">Messages that<br>stay yours.</h1>
 <p class="sub" style="white-space:normal;font-size:16px">Private chats, encrypted before they leave your device.</p>
-<div style="display:grid;gap:16px;margin-top:28px"><div style="display:flex;gap:14px"><span style="font-size:22px">🔒</span><div><b>End-to-end encrypted</b><div class="sub" style="white-space:normal">Only the people in a chat can read it.</div></div></div><div style="display:flex;gap:14px"><span style="font-size:22px">👤</span><div><b>No phone number or email</b><div class="sub" style="white-space:normal">Just a name and a username.</div></div></div><div style="display:flex;gap:14px"><span style="font-size:22px">🎙</span><div><b>Photos, voice and files</b><div class="sub" style="white-space:normal">Everything you share stays private.</div></div></div></div></div>
+<div style="display:grid;gap:16px;margin-top:28px"><div style="display:flex;gap:14px"><span style="color:var(--a)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><div><b>End-to-end encrypted</b><div class="sub" style="white-space:normal">Only the people in a chat can read it.</div></div></div><div style="display:flex;gap:14px"><span style="color:var(--a)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg></span><div><b>No phone number or email</b><div class="sub" style="white-space:normal">Just a name and a username.</div></div></div><div style="display:flex;gap:14px"><span style="color:var(--a)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></span><div><b>Photos, voice and files</b><div class="sub" style="white-space:normal">Everything you share stays private.</div></div></div></div></div>
 <div style="display:grid;gap:10px"><button class="pri" id="wc">Create account</button><button class="sec" id="wr" style="text-align:center">Restore from backup</button><p class="sub" style="text-align:center;white-space:normal;font-size:12px">Your account lives on this device. The relay temporarily stores encrypted messages for delivery.</p></div>
 <input type="file" id="rf" accept=".json,application/json" hidden></section>
 <section id="onb" class="scr" style="padding:20px 24px;gap:14px;overflow:auto">
@@ -90,19 +101,20 @@ label{font-size:13px;color:var(--m)}
 <header class="big"><h1>Chats</h1><button class="pill" id="ba">Archived</button><button class="pill" id="bj">Join</button><button class="pill p" id="bn">＋ New</button></header>
 <div class="pane on" id="pc"><div style="padding:8px 20px 6px"><input id="q" placeholder="Search"></div><div id="rooms"></div></div>
 <div class="pane" id="ps"></div>
-<nav><button id="tc" class="on">Chats</button><button id="ts">Settings</button></nav>
+<nav><button id="tc" class="on"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20.5l1.3-4.6A8 8 0 1 1 21 12z"/></svg><span>Chats</span></button><button id="ts"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></button></nav>
 </section>
 
 <section id="chat" class="scr">
-<header><button class="ic" id="bk" aria-label="Back">‹</button><div class="av" id="cav" style="width:40px;height:40px"></div>
+<header><button class="ic" id="bk" aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div class="av" id="cav" style="width:40px;height:40px"></div>
 <div class="grow"><b id="ct"></b><div class="sub" id="cs"></div></div>
-<button class="ic" id="bs" aria-label="Search in chat">🔍</button><button class="ic" id="bm" aria-label="Options">⋯</button></header><div id="sb"><input id="sq" placeholder="Search in this chat"></div>
+<button class="ic" id="cv" aria-label="Voice call"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button><button class="ic" id="cc" aria-label="Video call"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button><button class="ic" id="bs" aria-label="Search in chat"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></button><button class="ic" id="bm" aria-label="Options">⋯</button></header><div id="sb"><input id="sq" placeholder="Search in this chat"></div>
 <div id="msgs"></div>
 <div id="rpb"><div class="grow sub" id="rpt"></div><button id="rpx" aria-label="Cancel reply">✕</button></div>
-<div id="comp"><button class="ic" id="at" aria-label="Send photo">📎</button><textarea id="tx" rows="1" maxlength="2000" placeholder="Message"></textarea><button class="ic" id="cx" style="display:none" aria-label="Cancel recording">✕</button><button class="go" id="sd" aria-label="Send">🎙</button></div>
+<div id="comp"><button class="ic" id="at" aria-label="Attach photo or file"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><textarea id="tx" rows="1" maxlength="2000" placeholder="Message"></textarea><button class="ic" id="cx" style="display:none" aria-label="Cancel recording">✕</button><button class="go" id="sd" aria-label="Send or record voice message"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></button></div>
 <input type="file" id="fi" multiple hidden>
 </section>
 
+<div id="call"><video id="rv" autoplay playsinline></video><video id="lv" autoplay playsinline muted></video><div id="ci"><div class="av" id="cpav" style="width:112px;height:112px;font-size:44px"></div><h1 id="cpn" style="flex:none;font-size:26px"></h1><div id="cps" style="opacity:.8"></div></div><div id="cbar"><button class="cb" id="cm" aria-label="Mute"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></button><button class="cb" id="cv2" aria-label="Camera on or off"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button><button class="cb" id="ca" aria-label="Accept" style="background:#16a34a"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button><button class="cb" id="ce" aria-label="End call" style="background:#dc2626"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform:rotate(135deg)"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button></div></div>
 <input type="file" id="pf" accept="image/*" hidden><dialog id="dProf"></dialog>
 <dialog id="dNew"><b style="font-size:18px">New chat</b><div class="sub" style="white-space:normal">Create a private room, then send the invite link to the person you want to talk to. Their name appears here once they join.</div><input id="rn" placeholder="Room name (only for you)" maxlength="40"><button class="pri" id="rc">Create</button><button class="sec" onclick="this.closest('dialog').close()">Cancel</button></dialog>
 <dialog id="dJoin"><b style="font-size:18px">Join a chat</b><input id="jl" placeholder="Paste invitation link"><div class="sub" id="jn" style="white-space:normal">Paste the link someone sent you.</div><button class="pri" id="jg" disabled>Join</button><button class="sec" onclick="this.closest('dialog').close()">Cancel</button></dialog>
@@ -132,7 +144,7 @@ const col=r=>pe(r)[0]?.color||rc(r);
 const bz=new Set(),qq={},CH=393216,MAX_LOCAL_MESSAGES=2000;
 const fs=n=>n>1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB';
 const dn=m=>{if(!m.n)return'';const d=m.me?m.up||0:m.got||0;return d<m.n?(m.me?'Sending ':'Receiving ')+Math.round(d/m.n*100)+'%':''};
-const prev=m=>m.k?(m.k==='img'?'📷 Photo':m.k==='voice'?'🎤 Voice message':'📄 '+(m.dn||'File')):m.text;
+const prev=m=>m.k?(m.k==='img'?'Photo':m.k==='voice'?'Voice message':'File: '+(m.dn||'file')):m.text;
 function bdg(){const n=Object.values(st.rooms).reduce((a,x)=>a+(x.unread||0),0);document.title=n?`(${n}) LINK`:'LINK'}
 function notify(r,m){bdg();if(st.notif&&typeof Notification!=='undefined'&&Notification.permission==='granted'&&(document.hidden||cur!==r.id))try{new Notification(ttl(r),{body:st.pv===0?'New message':prev(m),tag:r.id})}catch{}}
 let cur=null,es={},live={},rep=null,edt=null,act=null,sq='',fwm=null,lastSig='',mc={};
@@ -166,6 +178,7 @@ const learn=(r,f,n,c,x)=>{r.peers??={};const nw=!r.peers[f],q=r.peers[f]||{};r.p
 async function handle(r,o){
   if(o.t==='ack'){const m=r.msgs.find(m=>m.id===o.ref);if(m&&m.me&&m.s!=='dlv'&&m.s!=='read')m.s='dlv';return}
   if(o.from===st.me.id)return;
+  if(o.t==='call'){callSig(r,o);return}
   if(o.t==='ty'){if(Math.abs(Date.now()-o.ts)<3e4){r.ty=Date.now()+4000;r.tyn=String(o.name).slice(0,24);ui();setTimeout(ui,4100)}return}
   if(o.t==='rd'){(o.refs||[]).forEach(id=>{const m=r.msgs.find(m=>m.id===id&&m.me);if(m)m.s='read'});return}
   if(o.t==='c'&&typeof o.d==='string'){const m=r.msgs.find(m=>m.fid===o.fid&&!m.me&&m.from===o.from);if(!m||m.got>=m.n||!(o.i>=0&&o.i<m.n))return;const k='c:'+o.fid+':'+o.i;if(await mget(k))return;await mput(k,unb64(o.d));m.got=(m.got||0)+1;if(m.got===m.n){const ps=[];for(let i=0;i<m.n;i++)ps.push(await mget('c:'+o.fid+':'+i));const bl=new Blob(ps);mc[m.id]=bl;await mput(m.id,bl);for(let i=0;i<m.n;i++)mdel('c:'+o.fid+':'+i);post(r,{t:'ack',ref:m.id}).catch(()=>{})}return}
@@ -206,6 +219,44 @@ async function speed(){
 }
 function reconnectAll(){Object.values(st.rooms).forEach(r=>{es[r.id]?.close();delete es[r.id];live[r.id]=0;connect(r)})}
 let hid=0;addEventListener('visibilitychange',()=>{if(document.hidden)hid=Date.now();else if(st.me&&Date.now()-hid>5000)reconnectAll()});addEventListener('online',()=>{if(st.me)reconnectAll()});
+const I={mic:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg>',send:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg>',stop:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor"/></svg>',file:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>',micoff:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M3 3l18 18"/></svg>'};
+// ---- voice & video calls (WebRTC; signalling goes through the encrypted relay as short-lived events) ----
+let call=null,cq=[];
+const ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'}]};
+const csig=(r,id,o)=>post(r,{t:'call',from:st.me.id,name:st.me.name,ts:Date.now(),id,...o},1).catch(()=>{});
+const media=k=>navigator.mediaDevices.getUserMedia({audio:true,video:k==='video'?{facingMode:'user'}:false});
+const drain=async()=>{while(cq.length&&call&&call.pc)await call.pc.addIceCandidate(cq.shift()).catch(()=>{})};
+function cui(){const c=$('#call');c.style.display=call?'flex':'none';if(!call)return;const r=call.r,pc=pp(r);c.className=call.kind+(call.on?' live':'');
+  $('#cpav').style.background=pc?`url(${pc}) center/cover`:col(r);$('#cpav').textContent=pc?'':[...ttl(r)][0].toUpperCase();$('#cpn').textContent=ttl(r);$('#cps').textContent=call.st||'';
+  $('#ca').style.display=call.in&&!call.pc?'grid':'none';$('#cm').style.display=call.pc?'grid':'none';$('#cv2').style.display=call.pc&&call.kind==='video'?'grid':'none';$('#ce').style.display='grid'}
+async function mkpc(){const c=call,pc=c.pc=new RTCPeerConnection(ICE);c.stream.getTracks().forEach(t=>pc.addTrack(t,c.stream));
+  pc.onicecandidate=e=>{if(e.candidate)csig(c.r,c.id,{a:'ice',c:e.candidate})};
+  pc.ontrack=e=>{$('#rv').srcObject=e.streams[0]};
+  pc.onconnectionstatechange=()=>{if(call!==c)return;if(pc.connectionState==='connected'){c.on=1;c.t0=c.t0||Date.now();clearInterval(c.iv);c.iv=setInterval(()=>{if(call!==c)return;const d=Math.round((Date.now()-c.t0)/1000);c.st=`${Math.floor(d/60)}:${String(d%60).padStart(2,'0')}`;$('#cps').textContent=c.st},1000);c.st='Connected';cui()}else if(pc.connectionState==='failed')endCall('Connection failed. A direct route between the phones could not be made.',1)}}
+async function startCall(kind){const r=st.rooms[cur];if(!r||call)return;if(!navigator.mediaDevices||!window.RTCPeerConnection)return alert('Calls are not supported in this browser.');if(!pe(r).length)return alert('Nobody has joined this chat yet.');
+  const c=call={r,id:rnd(9),kind,out:1,st:'Calling…'};try{c.stream=await media(kind)}catch{call=null;return alert('LINK needs microphone'+(kind==='video'?' and camera':'')+' permission to make calls.')}
+  $('#lv').srcObject=c.stream;cui();try{await mkpc();const o=await c.pc.createOffer();await c.pc.setLocalDescription(o);csig(r,c.id,{a:'offer',kind,sdp:o.sdp});c.to=setTimeout(()=>endCall('No answer',1),45000)}catch{endCall('Could not start the call',1)}}
+async function acceptCall(){const c=call;if(!c||!c.in||c.pc)return;clearTimeout(c.to);try{c.stream=await media(c.kind)}catch{alert('LINK needs microphone'+(c.kind==='video'?' and camera':'')+' permission to answer.');return endCall('Declined',1)}
+  $('#lv').srcObject=c.stream;c.st='Connecting…';cui();try{await mkpc();await c.pc.setRemoteDescription({type:'offer',sdp:c.offer});await drain();const a=await c.pc.createAnswer();await c.pc.setLocalDescription(a);csig(c.r,c.id,{a:'answer',sdp:a.sdp})}catch{endCall('Could not connect',1)}}
+function endCall(msg,tell){const c=call;if(!c)return;call=null;cq=[];clearTimeout(c.to);clearInterval(c.iv);if(tell)csig(c.r,c.id,{a:'end'});try{c.pc&&c.pc.close()}catch{}c.stream&&c.stream.getTracks().forEach(t=>t.stop());$('#rv').srcObject=null;$('#lv').srcObject=null;
+  const d=c.t0?Math.round((Date.now()-c.t0)/1000):0,lab=c.kind==='video'?'video call':'voice call',L=lab[0].toUpperCase()+lab.slice(1);
+  c.r.msgs.push({id:rnd(9),me:c.out?1:0,from:c.out?st.me.id:'',name:ttl(c.r),ts:Date.now(),s:'dlv',call:1,text:d?`${L} · ${Math.floor(d/60)}:${String(d%60).padStart(2,'0')}`:c.in?(msg==='Declined'?`Declined ${lab}`:`Missed ${lab}`):`${L} · ${msg==='Busy'?'busy':'no answer'}`});save();cui();ui(1);
+  if(!d&&msg&&!['Declined','Missed call','Busy','No answer','Call ended'].includes(msg))alert(msg)}
+async function callSig(r,o){
+  if(o.a==='offer'){if(Math.abs(Date.now()-o.ts)>3e4||typeof o.sdp!=='string')return;if(call){if(call.id!==o.id)csig(r,o.id,{a:'busy'});return}
+    const k=o.kind==='video'?'video':'voice';call={r,id:o.id,kind:k,in:1,offer:o.sdp,st:`Incoming ${k} call`};cq=[];cui();const c=call;c.to=setTimeout(()=>{if(call===c)endCall('Missed call',0)},45000);
+    if(document.hidden&&st.notif&&typeof Notification!=='undefined'&&Notification.permission==='granted')try{new Notification(ttl(r),{body:'Incoming call',tag:'call'})}catch{}return}
+  if(!call||call.id!==o.id)return;
+  if(o.a==='answer'&&call.pc&&!call.pc.currentRemoteDescription&&typeof o.sdp==='string'){await call.pc.setRemoteDescription({type:'answer',sdp:o.sdp}).catch(()=>{});await drain()}
+  else if(o.a==='ice'&&o.c){call.pc&&call.pc.remoteDescription?call.pc.addIceCandidate(o.c).catch(()=>{}):cq.push(o.c)}
+  else if(o.a==='end'||o.a==='busy')endCall(o.a==='busy'?'Busy':call.in&&!call.on?'Missed call':'Call ended',0)}
+$('#cv').onclick=()=>startCall('voice');$('#cc').onclick=()=>startCall('video');$('#ca').onclick=acceptCall;
+$('#ce').onclick=()=>endCall(call&&call.in&&!call.pc?'Declined':'Call ended',1);
+$('#cm').onclick=()=>{const t=call&&call.stream&&call.stream.getAudioTracks()[0];if(t){t.enabled=!t.enabled;$('#cm').innerHTML=t.enabled?I.mic:I.micoff}};
+$('#cv2').onclick=()=>{const t=call&&call.stream&&call.stream.getVideoTracks()[0];if(t)t.enabled=!t.enabled};
+// swipe left/right on the home screen to switch between Chats and Settings
+{let x0=0,y0=0;const h=$('#home');h.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+h.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;if(Math.abs(dx)<70||Math.abs(dy)*1.5>Math.abs(dx))return;const on=$('#ts').classList.contains('on');if(dx<0&&!on)$('#ts').click();else if(dx>0&&on)$('#tc').click()},{passive:true})}
 function connect(r){
   if(es[r.id])return;
   const e=es[r.id]=new EventSource(`/s/${r.id}?after=${r.seq||0}`);
@@ -222,7 +273,7 @@ const show=id=>document.querySelectorAll('.scr').forEach(e=>e.classList.toggle('
 function row(r){const m=r.msgs.at(-1);return `<button class="row" data-r="${r.id}">${av(ttl(r),col(r),pp(r))}<div class="grow"><b>${esc(ttl(r))}</b>${live[r.id]?'':' <span class="sub">· connecting</span>'}<div class="sub"${r.ty>Date.now()?' style="color:var(--a)"':''}>${r.ty>Date.now()?'typing…':m?esc((m.me?'You: ':'')+prev(m)):'Waiting for messages'}</div></div><div style="text-align:right"><div class="sub">${m?tm(m.ts):''}</div>${r.unread?`<span class="badge">${r.unread}</span>`:''}</div></button>`}
 function list(){
   const q=$('#q').value.toLowerCase(),arch=!!st.showArchived,rs=Object.values(st.rooms).filter(r=>!!st.archived?.[r.id]===arch&&(!q||(ttl(r)+' '+r.name+' '+r.msgs.map(m=>m.text||m.dn||'').join(' ')).toLowerCase().includes(q))).sort((a,b)=>(b.msgs.at(-1)?.ts||0)-(a.msgs.at(-1)?.ts||0)),pn=rs.filter(r=>r.pin),ot=rs.filter(r=>!r.pin);
-  $('#ba').textContent=arch?'All chats':'Archived';$('#rooms').innerHTML=rs.length?(pn.length?`<div class="lbl">Pinned</div>`+pn.map(row).join('')+(ot.length?`<div class="lbl">All chats</div>`:''):'')+ot.map(row).join(''):Object.keys(st.rooms).length?`<p class="sub" style="padding:40px;text-align:center">No matches.</p>`:`<div class="em"><div style="font-size:44px">💬</div><b style="font-size:20px">No chats yet</b><p class="sub" style="white-space:normal">Start a chat and send the invite link, or join with a link someone sent you.</p><button class="pill p" onclick="$('#bn').click()">Start a chat</button><button class="pill" onclick="$('#bj').click()">Join with a link</button></div>`;
+  $('#ba').textContent=arch?'All chats':'Archived';$('#rooms').innerHTML=rs.length?(pn.length?`<div class="lbl">Pinned</div>`+pn.map(row).join('')+(ot.length?`<div class="lbl">All chats</div>`:''):'')+ot.map(row).join(''):Object.keys(st.rooms).length?`<p class="sub" style="padding:40px;text-align:center">No matches.</p>`:`<div class="em"><div style="color:var(--m)"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20.5l1.3-4.6A8 8 0 1 1 21 12z"/></svg></div><b style="font-size:20px">No chats yet</b><p class="sub" style="white-space:normal">Start a chat and send the invite link, or join with a link someone sent you.</p><button class="pill p" onclick="$('#bn').click()">Start a chat</button><button class="pill" onclick="$('#bj').click()">Join with a link</button></div>`;
 }
 function chat(force){
   const r=st.rooms[cur];if(!r)return;
@@ -234,7 +285,7 @@ function chat(force){
   r.msgs.filter(m=>!sq||(m.text||m.dn||'').toLowerCase().includes(sq)).forEach(m=>{
     const day=new Date(m.ts).toDateString();if(day!==d){d=day;h+=`<div class="day">${dl(m.ts)}</div>`;p=null}
     if(!m.me&&p!==m.from)h+=`<div class="who">${esc(m.name)}</div>`;p=m.from;
-    const body=(m.fw?'<div class="fwl">↪ Forwarded</div>':'')+(m.reply?`<div class="q">${esc(m.reply.name)}: ${esc(m.reply.text)}</div>`:'')+(m.k==='img'?`<img class="pic" data-mid="${m.id}" data-big alt="Photo">`:m.k==='voice'?`<audio controls preload="metadata" data-mid="${m.id}"></audio>`:m.k==='doc'?`<a class="doc" href="#" data-mid="${m.id}" ${dn(m)?'':` data-dl="${esc(m.dn)}"`}>📄 <span><b>${esc(m.dn)}</b><br><span class="ed">${dn(m)||fs(m.sz)+' · tap to save'}</span></span></a>`:esc(m.text));
+    const body=(m.fw?'<div class="fwl">↪ Forwarded</div>':'')+(m.reply?`<div class="q">${esc(m.reply.name)}: ${esc(m.reply.text)}</div>`:'')+(m.k==='img'?`<img class="pic" data-mid="${m.id}" data-big alt="Photo">`:m.k==='voice'?`<audio controls preload="metadata" data-mid="${m.id}"></audio>`:m.k==='doc'?`<a class="doc" href="#" data-mid="${m.id}" ${dn(m)?'':` data-dl="${esc(m.dn)}"`}>${I.file} <span><b>${esc(m.dn)}</b><br><span class="ed">${dn(m)||fs(m.sz)+' · tap to save'}</span></span></a>`:esc(m.text));
     h+=`<div class="b${m.me?' me':''}" data-i="${m.id}"${m.s==='fail'?` data-retry="${m.id}"`:''}>${body}<div class="meta">${m.ed?'edited · ':''}${tm(m.ts)}${m.me?' '+{q:'○',sent:'✓',dlv:'✓✓',read:'✓✓ read',fail:'! tap to retry'}[m.s]:''}</div></div>`;
     const c={};Object.values(m.re||{}).forEach(e=>c[e]=(c[e]||0)+1);
     if(Object.keys(c).length)h+=`<div class="rx${m.me?' me':''}">${Object.entries(c).map(([e,n])=>`<span>${e}${n>1?' '+n:''}</span>`).join('')}</div>`;
@@ -285,7 +336,7 @@ $('#lp').onkeydown=e=>{if(e.key==='Enter')$('#lu').click()};
 $('#ogo').onclick=async()=>{const n=$('#oname').value.trim(),u=$('#ouser').value.trim().toLowerCase().replace(/^@/,''),p=$('#opin').value.trim(),er=$('#oerr');er.textContent='';
   if(!n)return $('#oname').focus();if(u&&!/^[a-z0-9_]{3,20}$/.test(u))return er.textContent='Username: 3–20 letters, numbers or _';if(p&&!/^\d{4,8}$/.test(p))return er.textContent='Passcode: 4 to 8 digits';
   st.me={id:rnd(9),name:n,user:u||n.toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,20)||'user',color:oc};if(p){const x=rnd(8);st.me.pin={s:x,h:await ph(p,x)}}unl=1;save();boot()};
-$('#tc').onclick=$('#ts').onclick=e=>{const s=e.target.id==='ts';$('#tc').classList.toggle('on',!s);$('#ts').classList.toggle('on',s);$('#pc').classList.toggle('on',!s);$('#ps').classList.toggle('on',s);if(s)sets()};
+$('#tc').onclick=$('#ts').onclick=e=>{const s=e.currentTarget.id==='ts';$('#tc').classList.toggle('on',!s);$('#ts').classList.toggle('on',s);$('#pc').classList.toggle('on',!s);$('#ps').classList.toggle('on',s);if(s)sets()};
 $('#q').oninput=list;
 $('#rooms').onclick=e=>{const b=e.target.closest('[data-r]');if(b)open(b.dataset.r)};
 $('#bn').onclick=()=>{$('#rn').value='';$('#dNew').showModal();$('#rn').focus()};
@@ -306,7 +357,7 @@ $('#md').onclick=()=>{if(confirm('Delete this conversation from this device? You
 $('#rpx').onclick=()=>{if(edt)$('#tx').value='';rep=null;edt=null;rpu();sdi()};
 $('#tx').oninput=e=>{e.target.style.height='auto';e.target.style.height=Math.min(e.target.scrollHeight,120)+'px';sdi();typ()};
 $('#tx').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey&&!matchMedia('(pointer:coarse)').matches){e.preventDefault();$('#sd').click()}};
-const sdi=()=>{$('#sd').textContent=rec?'■':$('#tx').value.trim()?'↑':'🎙';$('#sd').classList.toggle('r',!!rec);$('#cx').style.display=rec?'':'none';$('#at').style.display=rec?'none':''};
+const sdi=()=>{{const n=rec?'stop':$('#tx').value.trim()?'send':'mic';if($('#sd').dataset.i!==n){$('#sd').dataset.i=n;$('#sd').innerHTML=I[n]}}$('#sd').classList.toggle('r',!!rec);$('#cx').style.display=rec?'':'none';$('#at').style.display=rec?'none':''};
 $('#sd').onclick=()=>{if(rec)return rec.mr.stop();const t=$('#tx').value.trim();if(!t)return startRec();$('#tx').value='';$('#tx').style.height='';if(edt){const r=st.rooms[cur],m=msgOf(edt);edt=null;rpu();if(m&&t!==m.text){m.text=t;m.ed=1;save();ui();post(r,{t:'e',ref:m.id,from:st.me.id,text:t}).catch(()=>alert('Edit saved here only; could not reach the relay.'))}sdi();return}sdi();sendMsg(st.rooms[cur],{text:t});$('#tx').focus()};
 
 // voice messages
