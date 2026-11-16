@@ -1,6 +1,6 @@
 {
   "name": "link-private-chat",
-  "version": "1.3.2",
+  "version": "1.4.0-alpha.2",
   "private": true,
   "description": "LINK lightweight encrypted-chat beta",
   "main": "server.js",
@@ -9,6 +9,6 @@
     "test": "node --test"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22.13"
   }
 }

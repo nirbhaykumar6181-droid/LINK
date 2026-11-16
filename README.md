@@ -69,3 +69,11 @@ The IP limiter is per process and resets on restart; it is not a substitute for 
 - `manifest.webmanifest`, `icon.svg` — install metadata and icon.
 - `test/relay.test.js` — automated relay tests.
 - `SECURITY.md` — security reporting and deployment guidance.
+
+## Storage and recovery (v1.4)
+
+Messages are stored in `link.db` (SQLite) under `LINK_DATA_DIR`. They never expire; when a quota is reached new messages are rejected and the app warns. Raise `LINK_MAX_STORE_MB` only together with the Render disk size, because daily snapshots also live on that disk.
+
+First boot after upgrading imports an existing `rooms.json` automatically (original kept, copy in `backups/`). Check with `node scripts/verify-db.js`.
+
+Restore: stop the service, copy a file from `backups/` to `link.db`, delete `link.db-wal` and `link.db-shm`, start the service. Snapshots on the same disk do not protect against losing the disk: set `LINK_ADMIN_TOKEN` and download `/admin/backup` regularly.

@@ -1,5 +1,26 @@
 # Changelog
 
+## v1.4.0-alpha.2 (shared chat themes, header corner fix)
+
+- Fixed the black corners on rounded bars. Cause: the wallpaper was painted only on the message list, which sits between the rounded header and the rounded composer, so their curved corners showed the page background (near-black in dark mode). The wallpaper now lives on the chat container behind all three. No extra layers or overflow clipping. Verified in Chromium: corner pixel (13,14,16) before, wallpaper colour after.
+- Chat theme: every chat has its own theme (Options, then Chat theme) with live preview: preset or colour backgrounds, gallery photo (dimming, position, fill or fit), accent colour, font, incoming text style, bubble shape, reset.
+- Themes are shared with everyone in the chat through the existing encrypted relay events (`th`), versioned so simultaneous edits converge on every device. Chats without a shared theme keep using each device's own settings; nothing existing is overwritten.
+- Gallery backgrounds are uploaded once as encrypted chunks (`ta`) and referenced by id, never embedded in the theme. Other devices, including ones that join later, download and cache the image. A missing image falls back to the plain background and is re-read from stored history once.
+- Fixed a CSP error that would have blocked reading a picked image (data: URLs cannot be fetched under `connect-src 'self'`).
+- Browser tests in `test/browser/`.
+
+## v1.4.0-alpha.1 (in progress: permanent history, step 1)
+
+- Relay storage moved from `rooms.json` to SQLite (`link.db`) on the persistent disk: transactional writes, indexes, WAL, `synchronous=FULL`.
+- Removed the 7-day expiry, the 2,000-events-per-room cap and silent global pruning. Events are kept until a future explicit delete feature removes them.
+- Quotas are explicit and never delete data: when a room or the server is full, new messages are rejected with HTTP 507 and the app shows a banner. Defaults: 150 MB per room, 300 MB total (`LINK_MAX_ROOM_MB`, `LINK_MAX_STORE_MB`), plus a free-disk guard (`LINK_MIN_FREE_MB`).
+- Idempotent sends: the client sends a stable event id (`eid`); a retried message returns the original sequence number instead of storing a duplicate.
+- New `GET /h/:room?after=N|before=N&limit=N` paged history endpoint. Event streams now replay in small pages with back-pressure instead of loading a whole room.
+- Automatic migration of an existing `rooms.json` on first boot: copies it to `backups/`, imports without age filtering, verifies, and never modifies or deletes the original. Re-running is safe. Manual tools: `scripts/migrate-legacy.js [--dry-run]`, `scripts/verify-db.js`.
+- Daily consistent database snapshots in `backups/` (kept: `LINK_BACKUP_KEEP`, default 2). Optional `GET /admin/backup` (set `LINK_ADMIN_TOKEN`) downloads a snapshot for off-disk storage.
+- `/health` now reports the real version, storage level and last backup time.
+- Requires Node.js 22.13 or newer (`node:sqlite`). `render.yaml` sets NODE_VERSION 22.
+
 ## v1.3.2
 
 - Custom colour picker (hue, intensity, brightness sliders and hex code) beside the preset colours, for onboarding and Settings. Custom colours are shared with chat partners. Brightness is limited so white message text stays readable.

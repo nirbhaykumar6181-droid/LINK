@@ -8,7 +8,7 @@ This is not equivalent to a mature end-to-end encrypted messenger protocol. All 
 
 ## Data visible to the relay
 
-The relay can observe client IP addresses, room identifiers, connection timing, event timing, payload sizes and traffic patterns. It stores ciphertext event strings for up to seven days on its configured persistent disk.
+The relay can observe client IP addresses, room identifiers, connection timing, event timing, payload sizes and traffic patterns. It stores ciphertext event strings indefinitely in a SQLite database on its configured persistent disk (no automatic expiry). Server backups are copies of that ciphertext and are protected only by disk and dashboard access controls.
 
 ## Browser-local data
 

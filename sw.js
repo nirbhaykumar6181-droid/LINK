@@ -1,4 +1,4 @@
-const CACHE = 'link-shell-v1.3.2';
+const CACHE = 'link-shell-v1.4.0-a2';
 const SHELL = ['/', '/manifest.webmanifest', '/icon.svg'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -10,7 +10,7 @@ self.addEventListener('fetch', event => {
   const request = event.request;
   const url = new URL(request.url);
   if (request.method !== 'GET' || url.origin !== self.location.origin ||
-      url.pathname.startsWith('/s/') || url.pathname.startsWith('/p/')) return;
+      url.pathname.startsWith('/s/') || url.pathname.startsWith('/p/') || url.pathname.startsWith('/h/')) return;
   event.respondWith(fetch(request).then(response => {
     if (response.ok && ['/', '/manifest.webmanifest', '/icon.svg'].includes(url.pathname)) {
       const copy = response.clone();

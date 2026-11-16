@@ -128,6 +128,24 @@ dialog{border-radius:28px 28px 0 0}
 @media (max-width:400px){.sw{gap:8px}.sw i{width:32px;height:32px}.sw i.cust::after{inset:6px}}
 @media (max-width:400px){#ba{font-size:0;width:36px;height:36px;padding:0;background:var(--in) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b919a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='3' width='20' height='5' rx='1'/%3E%3Cpath d='M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4'/%3E%3C/svg%3E") center/18px no-repeat}}
 @media (min-width:700px){.scr{left:calc(50% - 240px);right:calc(50% - 240px);border-left:1px solid var(--b);border-right:1px solid var(--b);background:var(--bg)}}
+/* ===== v1.4: root-cause fix for black corners =====
+   The wallpaper used to be painted on #msgs only, which starts BELOW the rounded header and ends ABOVE the
+   rounded composer. The curved corners of those bars therefore revealed the page background (near-black in dark
+   mode) instead of the wallpaper. The wallpaper now lives on #chat, the parent that sits behind header, list and
+   composer, so every curved edge reveals the same surface. No extra layers, no overflow:hidden. */
+#chat{background:var(--bg)}
+#msgs{background:transparent}
+.bub-soft .b:not(.stk){border-radius:14px}
+.bub-sharp .b:not(.stk){border-radius:6px}
+.tc-light .b:not(.me):not(.stk){background:#2a2d33;color:#f4f4f5}
+.tc-dark .b:not(.me):not(.stk){background:#f1f1f1;color:#16181b}
+#dTh{max-height:92dvh;overflow-y:auto}
+#dTh .sw i.t{border-radius:10px;width:40px;height:40px;border:2px solid var(--b)}
+#dTh .sw i.t.on{border-color:var(--t)}
+#dTh .sw i.t.none{background:var(--bg)}
+.thpv{border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:6px;min-height:120px;background:var(--bg);border:1px solid var(--b);font-family:var(--cf,inherit)}
+.thpv .b{max-width:75%}
+#thst{min-height:18px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body>
 
@@ -168,11 +186,24 @@ dialog{border-radius:28px 28px 0 0}
 
 <div id="call"><video id="rv" autoplay playsinline></video><video id="lv" autoplay playsinline muted></video><div id="ci"><div class="av" id="cpav" style="width:112px;height:112px;font-size:44px"></div><h1 id="cpn" style="flex:none;font-size:26px"></h1><div id="cps" style="opacity:.8"></div></div><div id="cbar"><button class="cb" id="cm" aria-label="Mute"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></button><button class="cb" id="cv2" aria-label="Camera on or off"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button><button class="cb" id="ca" aria-label="Accept" style="background:#16a34a"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button><button class="cb" id="ce" aria-label="End call" style="background:#dc2626"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform:rotate(135deg)"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button></div></div>
 <input type="file" id="pf" accept="image/*" hidden><input type="file" id="bgf" accept="image/*" hidden>
-<dialog id="dStk"><b style="font-size:18px">Stickers</b><div id="stg" style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;text-align:center"></div><label>My stickers</label><div id="stm" style="display:flex;flex-wrap:wrap;gap:8px;min-height:20px"></div><div style="display:flex;gap:10px"><button class="sec" id="sta" style="text-align:center">Add from gallery</button><button class="sec" id="stx" style="text-align:center">Remove all</button></div><button class="sec" onclick="this.closest('dialog').close()">Close</button><input type="file" id="stf" accept="image/*" multiple hidden></dialog><dialog id="dProf"></dialog>
+<dialog id="dStk"><b style="font-size:18px">Stickers</b><div id="stg" style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;text-align:center"></div><label>My stickers</label><div id="stm" style="display:flex;flex-wrap:wrap;gap:8px;min-height:20px"></div><div style="display:flex;gap:10px"><button class="sec" id="sta" style="text-align:center">Add from gallery</button><button class="sec" id="stx" style="text-align:center">Remove all</button></div><button class="sec" onclick="this.closest('dialog').close()">Close</button><input type="file" id="stf" accept="image/*" multiple hidden></dialog><dialog id="dTh"><b style="font-size:18px">Chat theme</b><div class="sub">Applies to this chat only and is shared with everyone in it. Other chats and your app theme are not affected.</div>
+<div id="thpv" class="thpv"><div class="b">Hello there</div><div class="b me">Looks good</div></div>
+<label>Background</label><div class="sw" id="thsw"></div>
+<div style="display:flex;gap:10px"><button class="sec" id="thg" style="text-align:center">Choose from gallery</button><button class="sec" id="thr" style="text-align:center">Remove</button></div>
+<div id="thim" style="display:none;gap:10px;flex-direction:column"><label>Dimming <input type="range" class="rng" id="thdim" min="0" max="80" value="25" style="--trk:var(--in)"></label>
+<div style="display:flex;gap:10px"><select id="thpos" aria-label="Background position"><option value="center">Centre</option><option value="top">Top</option><option value="bottom">Bottom</option><option value="left">Left</option><option value="right">Right</option></select><select id="thfit" aria-label="Background scaling"><option value="cover">Fill screen</option><option value="contain">Fit whole image</option></select></div></div>
+<label>Accent colour (your bubbles in this chat)</label><div class="sw" id="thac"></div><button class="sec" id="thau" style="text-align:center">Use my colour</button>
+<label>Chat font</label><select id="thf"></select>
+<label>Incoming text</label><select id="tht"><option value="">Automatic</option><option value="light">Light text, dark bubbles</option><option value="dark">Dark text, light bubbles</option></select>
+<label>Bubble shape</label><select id="thb"><option value="">Round</option><option value="soft">Soft</option><option value="sharp">Sharp</option></select>
+<div id="thst" class="sub" role="status" aria-live="polite"></div>
+<button class="pri" id="tha">Apply to this chat</button><button class="sec" id="thx" style="text-align:center">Reset to default for everyone</button><button class="sec" id="thc" style="text-align:center">Cancel</button>
+<input type="file" id="thfi" accept="image/*" hidden></dialog>
+<dialog id="dProf"></dialog>
 <dialog id="dNew"><b style="font-size:18px">New chat</b><div class="sub" style="white-space:normal">Create a private room, then send the invite link to the person you want to talk to. Their name appears here once they join.</div><input id="rn" placeholder="Room name (only for you)" maxlength="40"><button class="pri" id="rc">Create</button><button class="sec" onclick="this.closest('dialog').close()">Cancel</button></dialog>
 <dialog id="dJoin"><b style="font-size:18px">Join a chat</b><input id="jl" placeholder="Paste invitation link"><div class="sub" id="jn" style="white-space:normal">Paste the link someone sent you.</div><button class="pri" id="jg" disabled>Join</button><button class="sec" onclick="this.closest('dialog').close()">Cancel</button></dialog>
 <dialog id="dInv"><b style="font-size:18px" id="in">Invite</b><div class="sub" style="white-space:normal">Anyone with this link can read and join this room. Share it only with people you trust.</div><div class="link" id="il"></div><button class="pri" id="ish">Share link</button><button class="sec" id="icp">Copy link</button><button class="sec" onclick="this.closest('dialog').close()">Done</button></dialog>
-<dialog id="dMenu"><button class="sec" id="ma">Archive chat</button><button class="sec" id="mp">Pin</button><button class="sec" id="mi">Invite link</button><button class="sec" id="md" style="color:#d92d20">Delete conversation</button><button class="sec" onclick="this.closest('dialog').close()">Close</button></dialog>
+<dialog id="dMenu"><button class="sec" id="mt">Chat theme</button><button class="sec" id="ma">Archive chat</button><button class="sec" id="mp">Pin</button><button class="sec" id="mi">Invite link</button><button class="sec" id="md" style="color:#d92d20">Delete conversation</button><button class="sec" onclick="this.closest('dialog').close()">Close</button></dialog>
 <dialog id="dAct"><div class="sw" id="rxs" style="justify-content:space-between;margin:0"></div><button class="sec" id="aR">Reply</button><button class="sec" id="aE">Edit</button><button class="sec" id="aF">Forward</button><button class="sec" id="aC">Copy text</button><button class="sec" id="aD" style="color:#d92d20">Delete for me</button><button class="sec" id="aX" style="color:#d92d20">Delete for everyone</button></dialog>
 <dialog id="dFw"><b style="font-size:18px">Forward to</b><div id="fwl"></div><button class="sec" onclick="this.closest('dialog').close()">Cancel</button></dialog>
 <dialog id="dCol"><b style="font-size:18px">Custom colour</b>
@@ -223,7 +254,8 @@ async function enc(r,o){const iv=crypto.getRandomValues(new Uint8Array(12)),c=aw
 async function dec(r,s){const a=unb64(s);return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:a.slice(0,12)},await key(r),a.slice(12))))}
 
 // messaging
-const post=async(r,o,e)=>{const x=await fetch(`/p/${r.id}${e?'?e=1':''}`,{method:'POST',body:await enc(r,o)});if(!x.ok)throw 0};
+let stLv='';function stNote(l){if(!l||l===stLv)return;stLv=l;let b=$('#stwarn');if(!b){b=document.createElement('div');b.id='stwarn';b.setAttribute('role','status');b.style.cssText='position:fixed;left:12px;right:12px;top:calc(8px + env(safe-area-inset-top));z-index:99;padding:10px 14px;border-radius:14px;background:#b42318;color:#fff;font-size:14px;text-align:center';b.onclick=()=>{b.hidden=true};document.body.append(b)}if(l==='ok'){b.hidden=true;return}b.hidden=false;b.textContent=l==='room'?'This chat has reached its server storage limit. New messages cannot be saved.':l==='full'?'Server storage is full. New messages cannot be saved until space is freed.':'Server storage is almost full. Messages may soon stop saving.'}
+const post=async(r,o,e)=>{const eid=!e&&(o.t==='m'?o.id:o.t==='c'?o.fid+'-'+o.i:o.t==='ta'?'ta-'+o.mid+'-'+o.i:o.t==='th'?'th-'+o.th.v+'-'+o.th.ts:'');const x=await fetch(`/p/${r.id}${e?'?e=1':eid?'?eid='+encodeURIComponent(eid):''}`,{method:'POST',body:await enc(r,o)});stNote(x.headers.get('X-Link-Storage'));if(!x.ok)throw 0};
 const sendHi=r=>post(r,{t:'hi',from:st.me.id,name:st.me.name,color:st.me.color,pic:st.me.pic,user:st.me.user,bio:st.me.bio}).catch(()=>{});
 async function deliver(r,m){if(bz.has(m.id))return;bz.add(m.id);try{const d=m.k&&!m.fid?(mc[m.id]??=await mget(m.id)):undefined;await post(r,{t:'m',id:m.id,from:m.from,name:m.name,color:m.color,ts:m.ts,text:m.text,k:m.k,dur:m.dur,reply:m.reply,fw:m.fw,stk:m.stk,dn:m.dn,sz:m.sz,fid:m.fid,n:m.n,d});if(m.fid){const f=await(mc[m.id]??=await mget(m.id));for(let i=m.up||0;i<m.n;i++){await post(r,{t:'c',from:m.from,fid:m.fid,i,d:b64(await f.slice(i*CH,(i+1)*CH).arrayBuffer())});m.up=i+1;save();ui()}}if(m.s==='q'||m.s==='fail')m.s='sent'}catch{m.s='fail'}bz.delete(m.id);save();ui()}
 const flush=r=>r.msgs.filter(m=>m.me&&(m.s==='q'||m.s==='fail')).forEach(m=>deliver(r,m));
@@ -238,6 +270,10 @@ const learn=(r,f,n,c,x)=>{r.peers??={};const nw=!r.peers[f],q=r.peers[f]||{};r.p
   if(x){const p=x.pic;if(typeof p==='string'&&p.length<80000&&/^data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/.test(p))r.peers[f].pic=p;else delete r.peers[f].pic;r.peers[f].user=String(x.user||'').replace(/[^a-z0-9_]/gi,'').slice(0,20);r.peers[f].bio=String(x.bio||'').slice(0,80)}return nw};
 async function handle(r,o){
   if(o.t==='ack'){const m=r.msgs.find(m=>m.id===o.ref);if(m&&m.me&&m.s!=='dlv'&&m.s!=='read')m.s='dlv';return}
+  if(o.t==='th'){const t=cleanTh(o.th);if(t&&newer(t,r.th)){r.th=t;if(cur===r.id)rtheme()}return}
+  if(o.t==='ta'){if(typeof o.mid!=='string'||!/^[\w-]{6,24}$/.test(o.mid)||!(o.n>=1&&o.n<=20)||!(o.i>=0&&o.i<o.n)||typeof o.d!=='string'||o.d.length>600000)return;if(await mget('bgm:'+o.mid))return;
+    const k='tc:'+o.mid+':'+o.i;if(!(await mget(k)))await mput(k,unb64(o.d));const ps=[];for(let i=0;i<o.n;i++){const x=await mget('tc:'+o.mid+':'+i);if(!x)return;ps.push(x)}
+    await mput('bgm:'+o.mid,new Blob(ps,{type:'image/jpeg'}));for(let i=0;i<o.n;i++)mdel('tc:'+o.mid+':'+i);if(cur===r.id)rtheme();return}
   if(o.from===st.me.id)return;
   if(o.t==='call'){callSig(r,o);return}
   if(o.t==='ty'){if(Math.abs(Date.now()-o.ts)<3e4){r.ty=Date.now()+4000;r.tyn=String(o.name).slice(0,24);ui();setTimeout(ui,4100)}return}
@@ -319,9 +355,61 @@ $('#cv2').onclick=()=>{const t=call&&call.stream&&call.stream.getVideoTracks()[0
 {let x0=0,y0=0;const h=$('#home');h.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
 h.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;if(Math.abs(dx)<70||Math.abs(dy)*1.5>Math.abs(dx))return;const on=$('#ts').classList.contains('on');if(dx<0&&!on)$('#ts').click();else if(dx>0&&on)$('#tc').click()},{passive:true})}
 const PRE=[['sand','linear-gradient(#f4ede3,#e8dccb)'],['mist','linear-gradient(#e9eff6,#d8e2ee)'],['sage','linear-gradient(#e3eee4,#cfe0d3)'],['rose','linear-gradient(#f8e8ec,#efd3da)'],['dusk','linear-gradient(#2b2f4a,#161826)'],['night','linear-gradient(#14171c,#0b0c0e)']];
-async function bgapply(){const el=$('#msgs'),b=st.bg;document.documentElement.classList.toggle('hasbg',!!b);if(!b){el.style.background='';return}
-  if(b.t==='preset'){el.style.background=(PRE.find(p=>p[0]===b.v)||PRE[0])[1];return}
-  const d=await mget('bg');if(!d){el.style.background='';return}const a=b.dim!=null?b.dim:.3;el.style.background=`linear-gradient(rgba(0,0,0,${a}),rgba(0,0,0,${a})),url(${d}) center/cover`}
+const PCOL=[['red','#4a0f18'],['blue','#10305c'],['purple','#32185a'],['green','#12432f'],['char','#222428']],HEX=/^#[0-9a-f]{6}$/i,POSV=['center','top','bottom','left','right'],TCH=300000;
+const lum=h=>{const n=parseInt(h.slice(1),16),f=c=>{c/=255;return c<=.03928?c/12.92:Math.pow((c+.055)/1.055,2.4)};return .2126*f(n>>16&255)+.7152*f(n>>8&255)+.0722*f(n&255)};
+// Room theme: validated field by field, because any room member can send one. Never put raw strings in CSS.
+function cleanTh(x){if(!x||typeof x!=='object')return null;const v=x.v,ts=x.ts;if(!Number.isSafeInteger(v)||v<0||v>1e9||!Number.isFinite(ts))return null;
+  const by=typeof x.by==='string'&&/^[\w-]{1,48}$/.test(x.by)?x.by:'';let bg=null;const b=x.bg;
+  if(b&&typeof b==='object'){if(b.t==='preset'&&PRE.some(p=>p[0]===b.v))bg={t:'preset',v:b.v};else if(b.t==='color'&&HEX.test(b.v))bg={t:'color',v:b.v.toLowerCase()};
+    else if(b.t==='img'&&typeof b.mid==='string'&&/^[\w-]{6,24}$/.test(b.mid))bg={t:'img',mid:b.mid,dim:Math.min(.8,Math.max(0,+b.dim||0)),pos:POSV.includes(b.pos)?b.pos:'center',fit:b.fit==='contain'?'contain':'cover'}}
+  return{v,ts,by,inh:x.inh?1:0,bg,acc:HEX.test(x.acc)&&lum(x.acc)<.35?x.acc.toLowerCase():null,fc:typeof x.fc==='string'&&Object.hasOwn(FC,x.fc)?x.fc:null,tc:x.tc==='light'||x.tc==='dark'?x.tc:null,bub:x.bub==='soft'||x.bub==='sharp'?x.bub:null}}
+// Conflict rule: higher version wins; tie -> later timestamp; tie -> larger sender id. Same on every device.
+const newer=(a,b)=>!b||a.v>b.v||(a.v===b.v&&(a.ts>b.ts||(a.ts===b.ts&&a.by>b.by)));
+// Effective theme: a chat with no shared theme (or a reset one) keeps using this device's own settings.
+function eff(r){const t=r&&r.th&&!r.th.inh?r.th:null,g=st.bg;let bg=null;
+  if(t)bg=t.bg;else if(g)bg=g.t==='img'?{t:'img',mid:'',dim:g.dim!=null?g.dim:.3,pos:'center',fit:'cover',loc:1}:g.t==='preset'?{t:'preset',v:g.v}:null;
+  return{bg,acc:t?t.acc:null,fc:(t&&t.fc)||st.fc||'default',tc:t?t.tc:null,bub:t?t.bub:null}}
+const bgu={};async function bgsrc(mid){const k=mid?'bgm:'+mid:'bg';if(bgu[k])return bgu[k];const v=await mget(k);if(!v)return'';if(typeof v==='string')return v;return bgu[k]=URL.createObjectURL(v)}
+async function wall(bg,pend){if(!bg)return{css:'',has:0};if(bg.t==='preset')return{css:(PRE.find(p=>p[0]===bg.v)||PRE[0])[1],has:1};if(bg.t==='color')return{css:bg.v,has:1};
+  const u=bg.pend?pend:await bgsrc(bg.mid);if(!u)return{css:'',has:0,miss:1};const a=bg.dim!=null?bg.dim:.3;
+  return{css:`linear-gradient(rgba(0,0,0,${a}),rgba(0,0,0,${a})),url("${u}") ${bg.pos||'center'}/${bg.fit==='contain'?'contain':'cover'} no-repeat,var(--bg)`,has:1}}
+function skin(el,e,w){el.style.background=w.css;el.style.setProperty('--cf',FC[e.fc]||FC.default);e.acc?el.style.setProperty('--a',e.acc):el.style.removeProperty('--a');
+  el.classList.toggle('bub-soft',e.bub==='soft');el.classList.toggle('bub-sharp',e.bub==='sharp');el.classList.toggle('tc-light',e.tc==='light');el.classList.toggle('tc-dark',e.tc==='dark')}
+let rtk=0;async function rtheme(){const k=++rtk,r=cur&&st.rooms[cur],e=eff(r),w=await wall(e.bg);if(k!==rtk)return;skin($('#chat'),e,w);document.documentElement.classList.toggle('hasbg',!!w.has);if(w.miss&&r&&e.bg&&e.bg.mid)fetchAsset(r,e.bg.mid)}
+async function bgapply(){return rtheme()}
+// A missing background (new device, restored backup) is re-read from the relay history once per session.
+const asking={};async function fetchAsset(r,mid){if(asking[mid])return;asking[mid]=1;try{let after=0;for(let g=0;g<200;g++){const x=await fetch(`/h/${r.id}?after=${after}&limit=100`);if(!x.ok)break;const p=await x.json();for(const ev of p.events){after=ev.seq;try{const o=await dec(r,ev.data);if(o.t==='ta'&&o.mid===mid)await handle(r,o)}catch{}}if(!p.more)break}}catch{}if(cur===r.id)rtheme()}
+// data: URLs cannot be fetch()ed under this app's CSP (connect-src 'self'), so decode them directly
+const d2b=u=>{const i=u.indexOf(','),bin=atob(u.slice(i+1)),a=new Uint8Array(bin.length);for(let k=0;k<bin.length;k++)a[k]=bin.charCodeAt(k);return new Blob([a],{type:u.slice(5,u.indexOf(';'))})};
+let thd=null,thPend='',thBusy=0;
+async function thPv(){const e={...thd},w=await wall(thd.bg,thPend);skin($('#thpv'),e,w);const im=thd.bg&&thd.bg.t==='img';$('#thim').style.display=im?'flex':'none';if(im){$('#thdim').value=Math.round((thd.bg.dim||0)*100);$('#thpos').value=thd.bg.pos||'center';$('#thfit').value=thd.bg.fit||'cover'}
+  $('#thsw').querySelectorAll('i').forEach(i=>i.classList.toggle('on',(i.dataset.k==='none'&&!thd.bg)||(thd.bg&&((thd.bg.t==='preset'&&i.dataset.k==='p:'+thd.bg.v)||(thd.bg.t==='color'&&i.dataset.k==='c:'+thd.bg.v)))));$('#thsw').dataset.img=im?1:''}
+async function thOpen(){const r=st.rooms[cur];if(!r)return;const e=eff(r);thd={bg:e.bg?{...e.bg}:null,acc:e.acc,fc:e.fc,tc:e.tc,bub:e.bub};thPend='';
+  if(thd.bg&&thd.bg.loc){thPend=(await mget('bg'))||'';thd.bg=thPend?{t:'img',mid:'',pend:1,dim:thd.bg.dim,pos:'center',fit:'cover'}:null}
+  $('#thsw').innerHTML='<i class="t none" data-k="none" title="Default" role="button" aria-label="Default background"></i>'+PRE.map(([k,c])=>`<i class="t" data-k="p:${k}" style="background:${c}" role="button" aria-label="${k}"></i>`).join('')+PCOL.map(([k,c])=>`<i class="t" data-k="c:${c}" style="background:${c}" role="button" aria-label="${k}"></i>`).join('');
+  $('#thf').innerHTML=Object.keys(FC).map(k=>`<option value="${k}">${k[0].toUpperCase()+k.slice(1)}</option>`).join('');$('#thf').value=thd.fc;$('#tht').value=thd.tc||'';$('#thb').value=thd.bub||'';
+  const accs=()=>sw($('#thac'),thd.acc||st.me.color,c=>{thd.acc=c;thPv()});accs();$('#thau').onclick=()=>{thd.acc=null;accs();thPv()};
+  $('#thst').textContent='';$('#tha').disabled=false;$('#dTh').showModal();thPv()}
+$('#mt').onclick=()=>{$('#dMenu').close();thOpen()};
+$('#thsw').onclick=e=>{const k=e.target.dataset.k;if(!k)return;thPend='';if(k==='none')thd.bg=null;else if(k[0]==='p')thd.bg={t:'preset',v:k.slice(2)};else thd.bg={t:'color',v:k.slice(2)};thPv()};
+$('#thg').onclick=()=>$('#thfi').click();
+$('#thfi').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const S=$('#thst');if(!/^image\//.test(f.type)){S.textContent='Please choose an image file.';return}if(f.size>25*1048576){S.textContent='That image is too large (max 25 MB).';return}
+  S.textContent='Preparing image…';try{thPend=await shrink(f,1600,.78);thd.bg={t:'img',mid:'',pend:1,dim:.25,pos:'center',fit:'cover'};S.textContent='';thPv()}catch{S.textContent='Could not read that image. Try a different one.'}};
+$('#thr').onclick=()=>{thPend='';thd.bg=null;thPv()};
+$('#thdim').oninput=e=>{if(thd.bg&&thd.bg.t==='img'){thd.bg.dim=e.target.value/100;thPv()}};
+$('#thpos').onchange=e=>{if(thd.bg&&thd.bg.t==='img'){thd.bg.pos=e.target.value;thPv()}};$('#thfit').onchange=e=>{if(thd.bg&&thd.bg.t==='img'){thd.bg.fit=e.target.value;thPv()}};
+$('#thf').onchange=e=>{thd.fc=e.target.value;thPv()};$('#tht').onchange=e=>{thd.tc=e.target.value||null;thPv()};$('#thb').onchange=e=>{thd.bub=e.target.value||null;thPv()};
+async function thPublish(th,S){const r=st.rooms[cur];th={v:(r.th?r.th.v:0)+1,ts:Date.now(),by:st.me.id,...th};await post(r,{t:'th',from:st.me.id,th});r.th=th;save();rtheme()}
+$('#tha').onclick=async()=>{if(thBusy||!cur)return;thBusy=1;const b=$('#tha'),S=$('#thst'),r=st.rooms[cur];b.disabled=true;
+  try{let bg=thd.bg?{...thd.bg}:null;
+    if(bg&&bg.pend){const blob=thPend?d2b(thPend):null;if(!blob)bg=null;else{if(blob.size>4*1048576)throw new Error('big');const mid=rnd(9),n=Math.max(1,Math.ceil(blob.size/TCH));await mput('bgm:'+mid,blob);
+      for(let i=0;i<n;i++){S.textContent=`Uploading background… ${Math.round(i/n*100)}%`;await post(r,{t:'ta',from:st.me.id,mid,i,n,d:b64(await blob.slice(i*TCH,(i+1)*TCH).arrayBuffer())})}
+      bg={t:'img',mid,dim:bg.dim,pos:bg.pos,fit:bg.fit}}}
+    S.textContent='Sharing theme…';await thPublish({inh:0,bg,acc:thd.acc,fc:thd.fc,tc:thd.tc,bub:thd.bub});$('#dTh').close()}
+  catch(e){S.textContent=e&&e.message==='big'?'That image is still too large after resizing. Choose a smaller one.':'Could not share the theme. Check your connection and try again. Nothing was changed.'}
+  finally{thBusy=0;b.disabled=false}};
+$('#thx').onclick=async()=>{if(thBusy||!cur||!confirm('Reset the theme for everyone in this chat?'))return;thBusy=1;try{await thPublish({inh:1,bg:null,acc:null,fc:null,tc:null,bub:null});$('#dTh').close()}catch{$('#thst').textContent='Could not reset the theme. Check your connection and try again.'}finally{thBusy=0}};
+$('#thc').onclick=()=>$('#dTh').close();
 $('#bgf').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{await mput('bg',await shrink(f));st.bg={t:'img',dim:.25};save();await bgapply();sets()}catch{alert('Could not load that image.')}};
 const SK=['😀','😂','🥹','😍','😘','😎','🤔','😴','😭','😡','🤯','🥳','👍','👏','🙌','🙏','💪','❤️','🔥','🎉','✨','💯','😅','🫶'];
 const stkimg=f=>new Promise((res,rej)=>{const u=URL.createObjectURL(f),i=new Image();i.onload=()=>{const k=Math.min(1,256/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=Math.max(1,i.width*k);c.height=Math.max(1,i.height*k);c.getContext('2d').drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL('image/png'))};i.onerror=rej;i.src=u});
@@ -402,7 +490,7 @@ const FC={default:'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif',serif:'
 function fonts(){const d=FD[st.fd]||FD.elegant,r=document.documentElement.style;r.setProperty('--df',d[0]);r.setProperty('--dw',d[1]);r.setProperty('--dl',d[2]);r.setProperty('--cf',FC[st.fc]||FC.default);r.setProperty('--cs',{s:'14px',m:'16px',l:'18px',xl:'20px'}[st.cs]||'16px');bgapply()}
 function theme(){const d=st.theme==='dark'||(st.theme==='system'&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.classList.toggle('dark',d);document.documentElement.style.setProperty('--a',st.me?.color||PAL[0]);document.querySelector('meta[name=theme-color]').content=d?'#0e0f11':'#fafaf9'}
 matchMedia('(prefers-color-scheme:dark)').onchange=theme;
-function open(id){cur=id;const r=st.rooms[id];r.unread=0;save();sq='';$('#sb').style.display='none';bdg();show('chat');history.pushState({c:1},'');rep=null;rpu();chat(1);list();rcpt(r)}
+function open(id){cur=id;const r=st.rooms[id];r.unread=0;save();sq='';$('#sb').style.display='none';bdg();show('chat');history.pushState({c:1},'');rep=null;rpu();chat(1);list();rcpt(r);rtheme()}
 function close(){cur=null;show('home');list()}
 addEventListener('popstate',()=>{if(cur)close()});
 function rpu(){$('#rpb').style.display=rep||edt?'flex':'none';$('#rpt').textContent=edt?'Editing message':rep?`Replying to ${rep.name}: ${rep.text}`:''}
@@ -456,7 +544,7 @@ async function startRec(){
 $('#cx').onclick=()=>{if(rec){rec.cancel=1;rec.mr.stop()}};
 
 // photos
-const shrink=f=>new Promise((res,rej)=>{const u=URL.createObjectURL(f),i=new Image();i.onload=()=>{const k=Math.min(1,1280/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL('image/jpeg',.72))};i.onerror=rej;i.src=u});
+const shrink=(f,m=1280,q=.72)=>new Promise((res,rej)=>{const u=URL.createObjectURL(f),i=new Image();i.onload=()=>{const k=Math.min(1,m/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL('image/jpeg',q))};i.onerror=rej;i.src=u});
 $('#at').onclick=()=>$('#fi').click();
 $('#fi').onchange=async e=>{for(const f of e.target.files){try{if(f.type==='image/gif'&&f.size<=7e5)await sendMsg(st.rooms[cur],{k:'img',data:await new Promise(r=>{const x=new FileReader();x.onload=()=>r(x.result);x.readAsDataURL(f)})});else if(f.type.startsWith('image/')&&f.type!=='image/gif')await sendMsg(st.rooms[cur],{k:'img',data:await shrink(f)});else if(f.size>31457280)alert(f.name+' is too large. The limit is 30 MB.');else await sendMsg(st.rooms[cur],{k:'doc',dn:f.name,sz:f.size,data:f})}catch{alert('Could not load '+f.name)}}e.target.value=''};
 
