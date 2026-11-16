@@ -1,0 +1,32 @@
+# Security notes
+
+## Current model
+
+The browser encrypts each message payload with AES-256-GCM before sending it to the relay. The room key is a random 256-bit key embedded in the invitation URL fragment. URL fragments are not included in HTTP requests, so the relay does not receive the key through normal navigation.
+
+This is not equivalent to a mature end-to-end encrypted messenger protocol. All participants share the same symmetric key and can create valid ciphertext. There is no sender authentication, forward secrecy, device identity, key rotation, membership revocation or independent cryptographic audit.
+
+## Data visible to the relay
+
+The relay can observe client IP addresses, room identifiers, connection timing, event timing, payload sizes and traffic patterns. It stores ciphertext event strings for up to seven days on its configured persistent disk.
+
+## Browser-local data
+
+The app stores account/profile data, room keys, chat metadata and text in localStorage. Media blobs are stored in IndexedDB. The optional passcode is a convenience screen lock only; it is not a cryptographic storage boundary. Exported backup JSON contains private room keys and should be treated as a secret.
+
+## Deployment checklist
+
+- Use HTTPS only.
+- Use a persistent disk and tested backups.
+- Restrict dashboard and disk access.
+- Keep Node.js updated.
+- Put the service behind a trusted reverse proxy or managed edge protection.
+- Set `LINK_TRUST_PROXY=1` only if forwarded headers are overwritten by that proxy.
+- Monitor disk usage, error logs, rate-limit events and connection counts.
+- Do not expose environment files or data directories as static files.
+- Run `npm test` before deployment.
+- Complete an independent threat model and security audit before public release.
+
+## Reporting
+
+For a suspected vulnerability, do not post exploit details publicly. Contact the project maintainer through a private channel and include the affected version, impact and a reproducible description. No formal security response SLA is currently provided.
