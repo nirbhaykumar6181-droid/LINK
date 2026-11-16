@@ -173,10 +173,33 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  const match = url.pathname.match(/^\/(s|p|h)\/([A-Za-z0-9_-]{8,64})$/);
+  const match = url.pathname.match(/^\/(s|p|h|j)\/([A-Za-z0-9_-]{8,64})$/);
   if (!match) { headers(res); res.writeHead(404); return res.end(JSON.stringify({ error: 'Not found' })); }
   if (!rateLimit(req, res)) return;
   const [, action, id] = match;
+
+  // Protected chats (ids starting "pv--"): everyone needs a seat (token) to read, send or fetch history.
+  const prot = id.startsWith('pv--');
+  const tokOK = t => /^[A-Za-z0-9_-]{16,64}$/.test(t);
+  if (action === 'j') {
+    if (req.method !== 'POST') return json(res, 405, { error: 'Use POST.' });
+    if (!prot) return json(res, 400, { error: 'Not a protected chat.' });
+    let jb = '', big = false;
+    req.on('data', c => { if (jb.length > 2048) big = true; else jb += c; });
+    req.on('end', () => {
+      let o = null; try { o = JSON.parse(jb); } catch {}
+      if (big || !o || typeof o.ct !== 'string' || !tokOK(o.ct) || !Number.isInteger(o.max) || o.max < 2 || o.max > 100)
+        return json(res, 400, { error: 'Invalid join request.' });
+      let r; try { r = store.join(id, o.ct, o.max); } catch (e) { return storeFail(res, e); }
+      if (!r.ok) return json(res, 403, { error: 'full', members: r.members, max: r.max });
+      return json(res, 200, { ok: true, members: r.members, max: r.max });
+    });
+    return;
+  }
+  if (prot) {
+    const ct = url.searchParams.get('ct') || '';
+    if (!tokOK(ct) || !store.isMember(id, ct)) return json(res, 403, { error: 'Join this chat first.' });
+  }
 
   if (action === 'h') {
     if (req.method !== 'GET') { headers(res); res.writeHead(405, { Allow: 'GET' }); return res.end(); }
