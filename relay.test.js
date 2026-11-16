@@ -32,7 +32,7 @@ test('health and static app are served', async () => {
   await ready();
   const health = await (await fetch(base + '/health')).json();
   assert.equal(health.ok, true);
-  assert.equal(health.version, '1.0.0');
+  assert.equal(health.version, require('../package.json').version);
   const app = await fetch(base + '/');
   assert.equal(app.status, 200);
   assert.match(await app.text(), /<title>LINK<\/title>/);
