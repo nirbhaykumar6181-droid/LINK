@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.4.0-alpha.3 (private chat and group links)
+
+- New chat now asks for Private chat (a link for exactly one other person) or Group chat (a member limit of 5/10/25/50). The relay enforces the limit: extra people are refused when they join.
+- Each device holds a random seat token per chat; only its SHA-256 hash is stored (tables `room_limits`, `room_members`, created with IF NOT EXISTS, no change to existing tables). Seats persist with the database and are included in backups.
+- Protected chats use ids that start with `pv--` and links in the new `#k=` form. Existing chats and old `#j=` links behave exactly as before.
+- A device that loses its token (cleared browser data without a backup) cannot rejoin a full chat. Backups include tokens.
+- Known limit: the seat token travels in the request URL, so Render request logs can contain it. The encryption key stays in the link fragment and is never sent to the server.
+
 ## v1.4.0-alpha.2 (shared chat themes, header corner fix)
 
 - Fixed the black corners on rounded bars. Cause: the wallpaper was painted only on the message list, which sits between the rounded header and the rounded composer, so their curved corners showed the page background (near-black in dark mode). The wallpaper now lives on the chat container behind all three. No extra layers or overflow clipping. Verified in Chromium: corner pixel (13,14,16) before, wallpaper colour after.
@@ -61,3 +69,22 @@
 - Updated the connection test for the relay's room-creation behavior.
 - Rewrote product security disclosures to state current limitations accurately.
 - Added automated relay tests and deployment/security documentation.
+
+
+## 1.4.0-alpha.6 — Friends
+
+- Added username-based friend requests, incoming request accept/decline, sent-request status and friends list.
+- Added link-free one-to-one chats for accepted friends.
+- Added client-side ECDH P-256 + HKDF key derivation for direct-chat encryption; private keys stay on the device.
+- Added public-key storage to profiles and automatic key setup for existing profiles.
+- Added friend-request polling while the Friends dialog is open.
+- Existing chat rooms and data schema remain intact; friend/profile tables are initialized additively.
+
+
+## 1.4.0-alpha.7 — QR profile friend actions
+
+- Scanning a LINK profile QR now opens the public profile with a contextual Add Friend action.
+- The profile checks the current relationship and displays the correct state: Add Friend, Request sent, Accept/Decline, or Message.
+- Accepting a request from the scanned profile refreshes the profile state; accepted friends can start their private chat directly from that profile.
+- Own-profile QR scans identify the profile as yours and do not show an Add Friend action.
+- Existing QR format, profile URLs, chat data and database schema remain compatible.

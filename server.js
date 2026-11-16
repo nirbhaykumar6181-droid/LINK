@@ -173,6 +173,55 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Public username registry: only profile display fields are exposed.
+  if (url.pathname === '/api/username/check' && req.method === 'GET') {
+    const username = String(url.searchParams.get('u') || '').toLowerCase();
+    if (!/^[a-z0-9_]{3,20}$/.test(username)) return json(res, 400, { ok: false, error: 'Username must be 3–20 letters, numbers or underscores.' });
+    return json(res, 200, { ok: true, available: store.usernameAvailable(username, String(url.searchParams.get('id') || '')) });
+  }
+  if (url.pathname === '/api/profile' && req.method === 'POST') {
+    let body = ''; req.on('data', c => { body += c; if (body.length > 4096) req.destroy(); });
+    req.on('end', () => { let o; try { o = JSON.parse(body); } catch { return json(res, 400, { ok: false, error: 'Invalid request.' }); }
+      const id = String(o.id || ''), username = String(o.username || '').toLowerCase(), name = String(o.name || '').trim(), publicKey = o.publicKey ? String(o.publicKey) : null;
+      if (!/^[A-Za-z0-9_-]{8,64}$/.test(id) || !/^[a-z0-9_]{3,20}$/.test(username) || !name || name.length > 24 || (publicKey && (publicKey.length > 1000 || !/^[A-Za-z0-9_-]+$/.test(publicKey)))) return json(res, 400, { ok: false, error: 'Invalid profile details.' });
+      const result = store.registerProfile(id, username, name, publicKey); return json(res, result.ok ? 200 : 409, result.ok ? { ok: true } : { ok: false, error: 'That username is already taken.' });
+    }); return;
+  }
+  if (url.pathname.startsWith('/api/profile/') && req.method === 'GET') {
+    const username = decodeURIComponent(url.pathname.slice('/api/profile/'.length)).toLowerCase();
+    const p = store.getProfile(username); if (!p) return json(res, 404, { ok: false, error: 'Profile not found.' });
+    return json(res, 200, { ok: true, profile: { username: p.username, name: p.name, publicKey: p.public_key || null } });
+  }
+
+  // Friend discovery and requests. The client supplies its local account ID; this beta identity model is not account-authentication.
+  if (url.pathname === '/api/friends' && req.method === 'GET') {
+    if (!rateLimit(req, res)) return;
+    const id = String(url.searchParams.get('id') || '');
+    if (!/^[A-Za-z0-9_-]{8,64}$/.test(id)) return json(res, 400, { ok: false, error: 'Invalid account.' });
+    return json(res, 200, { ok: true, friends: store.friendsFor(id) });
+  }
+  if (url.pathname === '/api/friends/request' && req.method === 'POST') {
+    if (!rateLimit(req, res)) return;
+    let body=''; req.on('data',c=>{body+=c;if(body.length>4096)req.destroy()});
+    req.on('end',()=>{let o;try{o=JSON.parse(body)}catch{return json(res,400,{ok:false,error:'Invalid request.'})}
+      const from=String(o.from||''), username=String(o.username||'').toLowerCase().replace(/^@/,''), p=store.getProfile(username);
+      if(!/^[A-Za-z0-9_-]{8,64}$/.test(from)||!p)return json(res,404,{ok:false,error:'That username was not found.'});
+      const result=store.sendFriendRequest(from,p.account_id);
+      if(!result.ok)return json(res,409,{ok:false,error:result.code==='self'?'You cannot add yourself.':result.code==='friends'?'You are already friends.':'Could not send request.'});
+      return json(res,200,{ok:true,accepted:!!result.accepted});
+    }); return;
+  }
+  if (url.pathname === '/api/friends/respond' && req.method === 'POST') {
+    if (!rateLimit(req, res)) return;
+    let body=''; req.on('data',c=>{body+=c;if(body.length>4096)req.destroy()});
+    req.on('end',()=>{let o;try{o=JSON.parse(body)}catch{return json(res,400,{ok:false,error:'Invalid request.'})}
+      const to=String(o.to||''),from=String(o.from||''),accept=o.accept===true;
+      if(!/^[A-Za-z0-9_-]{8,64}$/.test(to)||!/^[A-Za-z0-9_-]{8,64}$/.test(from))return json(res,400,{ok:false,error:'Invalid request.'});
+      if(!store.respondFriendRequest(to,from,accept))return json(res,409,{ok:false,error:'This request is no longer available.'});
+      return json(res,200,{ok:true});
+    }); return;
+  }
+
   const match = url.pathname.match(/^\/(s|p|h|j)\/([A-Za-z0-9_-]{8,64})$/);
   if (!match) { headers(res); res.writeHead(404); return res.end(JSON.stringify({ error: 'Not found' })); }
   if (!rateLimit(req, res)) return;

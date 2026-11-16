@@ -146,6 +146,14 @@ dialog{border-radius:28px 28px 0 0}
 .thpv{border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:6px;min-height:120px;background:var(--bg);border:1px solid var(--b);font-family:var(--cf,inherit)}
 .thpv .b{max-width:75%}
 #thst{min-height:18px}
+/* my QR code */
+#dQr{max-height:92dvh;overflow-y:auto}
+#qrPrev{width:100%;max-width:300px;height:auto;margin:0 auto;display:block;border-radius:24px;box-shadow:var(--sh);flex:none}
+.qopt{display:flex;flex-wrap:wrap;gap:8px}
+.qopt button{border:1px solid var(--b);background:var(--in);color:var(--t);border-radius:14px;padding:9px 14px;font:inherit;font-size:14px}
+.qopt button.on{background:var(--a);color:#fff;border-color:transparent}
+.qopt button:disabled{opacity:.4}
+#qrWarn{font-size:13px;color:#b45309;text-align:center}#qrWarn:empty{display:none}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .kd{display:flex;gap:8px}.kd button{flex:1;padding:12px;border-radius:14px;background:var(--in);font-weight:600}.kd .on{background:var(--a);color:#fff}
 </style></head><body>
@@ -161,7 +169,7 @@ dialog{border-radius:28px 28px 0 0}
 <button class="ic" id="ob" aria-label="Back">‹</button>
 <h1 style="font-size:28px;flex:none">Create your account</h1>
 <div><label>Name</label><input id="oname" placeholder="What should people call you?" maxlength="24"></div>
-<div><label>Username</label><input id="ouser" placeholder="e.g. alex_21" maxlength="21" autocapitalize="none" autocomplete="off"></div>
+<div><label>Username</label><input id="ouser" placeholder="e.g. alex_21" maxlength="21" autocapitalize="none" autocomplete="off"><div class="sub" id="unameStatus" aria-live="polite" style="white-space:normal">3–20 letters, numbers or underscores. We’ll check availability.</div></div>
 <div><label>Color</label><div class="sw" id="osw"></div></div>
 <div><label>App passcode (optional, 4–8 digits)</label><input id="opin" type="password" inputmode="numeric" maxlength="8" placeholder="Lock LINK on this device"></div>
 <div class="sub" id="oerr" style="color:#d92d20;white-space:normal"></div>
@@ -169,7 +177,7 @@ dialog{border-radius:28px 28px 0 0}
 <section id="lock" class="scr" style="padding:32px 24px;justify-content:center;gap:14px"><h1 style="font-size:28px;flex:none" id="lh">Welcome back</h1><input id="lp" type="password" inputmode="numeric" maxlength="8" placeholder="Passcode"><div class="sub" id="le" style="color:#d92d20"></div><button class="pri" id="lu">Unlock</button></section>
 
 <section id="home" class="scr">
-<header class="big"><h1>Chats</h1><button class="pill" id="ba" aria-label="Archived chats">Archived</button><button class="pill" id="bj">Join</button><button class="pill p" id="bn">＋ New</button></header>
+<header class="big"><h1>Chats</h1><button class="pill" id="bf">Friends</button><button class="pill" id="ba" aria-label="Archived chats">Archived</button><button class="pill" id="bj">Join</button><button class="pill p" id="bn">＋ New</button></header>
 <div class="pane on" id="pc"><div style="padding:8px 20px 6px"><input id="q" placeholder="Search"></div><div id="rooms"></div></div>
 <div class="pane" id="ps"></div>
 <nav><button id="tc" class="on"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20.5l1.3-4.6A8 8 0 1 1 21 12z"/></svg><span>Chats</span></button><button id="ts"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></button></nav>
@@ -200,7 +208,7 @@ dialog{border-radius:28px 28px 0 0}
 <div id="thst" class="sub" role="status" aria-live="polite"></div>
 <button class="pri" id="tha">Apply to this chat</button><button class="sec" id="thx" style="text-align:center">Reset to default for everyone</button><button class="sec" id="thc" style="text-align:center">Cancel</button>
 <input type="file" id="thfi" accept="image/*" hidden></dialog>
-<dialog id="dProf"></dialog>
+<dialog id="dFriends"><b style="font-size:20px">Friends</b><div class="sub" style="white-space:normal">Find people by username, accept requests, and message friends directly.</div><div style="display:flex;gap:8px"><input id="friendSearch" placeholder="Search @username" maxlength="21"><button class="pri" id="friendAdd" style="width:auto;padding:0 16px">Add</button></div><div id="friendStatus" class="sub" role="status" style="white-space:normal"></div><div id="friendRequests"></div><div id="friendList"></div><button class="sec" id="friendRefresh">Refresh</button><button class="sec" onclick="this.closest('dialog').close()">Done</button></dialog><dialog id="dProf"></dialog>
 <dialog id="dNew"><b style="font-size:18px">New chat</b><div class="kd"><button id="nk1" class="on">Private chat</button><button id="nk2">Group chat</button></div><div class="sub" id="nkd" style="white-space:normal"></div><input id="rn" maxlength="40"><div id="ngm" style="display:none"><label>Maximum people</label><select id="ngs"><option value="5">5</option><option value="10" selected>10</option><option value="25">25</option><option value="50">50</option></select></div><button class="pri" id="rc">Create link</button><button class="sec" onclick="this.closest('dialog').close()">Cancel</button></dialog>
 <dialog id="dJoin"><b style="font-size:18px">Join a chat</b><input id="jl" placeholder="Paste invitation link"><div class="sub" id="jn" style="white-space:normal">Paste the link someone sent you.</div><button class="pri" id="jg" disabled>Join</button><button class="sec" onclick="this.closest('dialog').close()">Cancel</button></dialog>
 <dialog id="dInv"><b style="font-size:18px" id="in">Invite</b><div class="sub" style="white-space:normal">Anyone with this link can read and join this room. Share it only with people you trust.</div><div class="link" id="il"></div><button class="pri" id="ish">Share link</button><button class="sec" id="icp">Copy link</button><button class="sec" onclick="this.closest('dialog').close()">Done</button></dialog>
@@ -214,6 +222,17 @@ dialog{border-radius:28px 28px 0 0}
 <label>Brightness</label><input type="range" class="rng" id="colL" min="20" max="65" aria-label="Brightness">
 <label>Hex code</label><input id="colX" maxlength="7" autocapitalize="characters" autocomplete="off" spellcheck="false" inputmode="text">
 <button class="pri" id="colOk">Use this colour</button><button class="sec" onclick="this.closest('dialog').close()" style="text-align:center">Cancel</button></dialog>
+<dialog id="dQr"><b style="font-size:18px">My QR code</b>
+<canvas id="qrPrev" width="1080" height="1350" role="img" aria-label="Your LINK QR code"></canvas>
+<div id="qrWarn" role="status"></div>
+<label>Dot shape</label><div class="qopt" id="qrShape"></div>
+<label>Corner style</label><div class="qopt" id="qrEye"></div>
+<label>Code colour</label><div class="sw" id="qrFg"></div>
+<label>Background</label><div class="sw" id="qrBg"></div>
+<label>Centre badge</label><div class="qopt" id="qrCentre"></div>
+<button class="pri" id="qrSv">Save image</button>
+<div style="display:flex;gap:10px"><button class="sec" id="qrSh" style="flex:1;text-align:center">Share</button><button class="sec" id="qrCp" style="flex:1;text-align:center">Copy link</button></div>
+<button class="sec" onclick="this.closest('dialog').close()" style="text-align:center">Close</button></dialog>
 <dialog id="dImg"><img id="big" alt="Photo"></dialog>
 
 <script>
@@ -467,8 +486,9 @@ function chat(force){
 async function hydrate(){for(const e of document.querySelectorAll('[data-mid]')){const k=e.dataset.mid;mc[k]??=await mget(k);if(mc[k]&&e.getAttribute('src')!==mc[k])e.src=mc[k]}$('#msgs').scrollTop=$('#msgs').scrollTop}
 const sw=(el,c,cb)=>{const cu=!PAL.includes(c);el.innerHTML=PAL.map(x=>`<i data-c="${x}" class="${x===c?'on':''}" style="background:${x}"></i>`).join('')+(cu?`<i data-c="${c}" class="on" style="background:${c}"></i>`:'')+`<i data-c="custom" class="cust" role="button" aria-label="Custom colour"></i>`;el.onclick=e=>{const k=e.target.dataset.c;if(!k)return;if(k==='custom')return cpick(c,x=>{cb(x);sw(el,x,cb)});cb(k);sw(el,k,cb)}};
 function sets(){
-  $('#ps').innerHTML=`<div style="padding:20px;display:grid;gap:22px"><h1 style="font-size:30px">Settings</h1><div class="sec" style="display:flex;gap:14px;align-items:center">${av(st.me.name,st.me.color,st.me.pic)}<div><b>${esc(st.me.name)}</b><div class="sub">@${esc(st.me.user||'you')} · stored on this device</div></div></div><div style="display:flex;gap:10px"><button class="sec" id="spic" style="text-align:center">Change photo</button>${st.me.pic?'<button class="sec" id="spx" style="text-align:center">Remove</button>':''}</div><div><label>About you (shown on your profile)</label><input id="sbio" maxlength="80" value="${esc(st.me.bio||'')}"></div><div><label>Your name (shown to people you chat with)</label><input id="sn" value="${esc(st.me.name)}" maxlength="24"></div><div><label>Color</label><div class="sw" id="ssw"></div></div><div><label>Heading style</label><select id="sfd">${[['elegant','Elegant (Brown Sugar style)'],['classic','Classic'],['editorial','Editorial'],['marcel','Marcellus'],['clean','Clean']].map(([v,l])=>`<option value="${v}"${(st.fd||'elegant')===v?' selected':''}>${l}</option>`).join('')}</select></div><div><label>Chat text</label><select id="sfc">${[['default','Simple (default)'],['rounded','Rounded'],['humanist','Humanist'],['serif','Serif'],['classic','Classic'],['casual','Casual'],['typewriter','Typewriter'],['condensed','Condensed'],['mono','Mono']].map(([v,l])=>`<option value="${v}"${(st.fc||'default')===v?' selected':''}>${l}</option>`).join('')}</select></div><div><label>Text size</label><select id="sts">${[['s','Small'],['m','Normal'],['l','Large'],['xl','Extra large']].map(([v,l])=>`<option value="${v}"${(st.cs||'m')===v?' selected':''}>${l}</option>`).join('')}</select></div><div><label>Chat background</label><div class="sw" id="sbg" style="flex-wrap:wrap"></div><div style="display:flex;gap:10px"><button class="sec" id="sbu" style="text-align:center">Upload from gallery</button><button class="sec" id="sbr" style="text-align:center">Reset</button></div><label>Dim photo background</label><input type="range" id="sbd" min="0" max="70" value="${Math.round((st.bg&&st.bg.dim!=null?st.bg.dim:.3)*100)}"></div><div><label>Theme</label><select id="sth">${['system','light','dark'].map(t=>`<option value="${t}"${st.theme===t?' selected':''}>${t[0].toUpperCase()+t.slice(1)}</option>`).join('')}</select></div><label style="display:flex;justify-content:space-between;align-items:center;gap:12px"><span>Notifications<br><span class="sub">While LINK is open in the background</span></span><input type="checkbox" id="snt" style="width:auto"${st.notif?' checked':''}></label><label style="display:flex;justify-content:space-between;align-items:center"><span>Show message previews</span><input type="checkbox" id="spv" style="width:auto"${st.pv===0?'':' checked'}></label><label style="display:flex;justify-content:space-between;align-items:center"><span>Read receipts</span><input type="checkbox" id="srr" style="width:auto"${st.rr===0?'':' checked'}></label><label style="display:flex;justify-content:space-between;align-items:center"><span>Typing indicators</span><input type="checkbox" id="sty" style="width:auto"${st.ty===0?'':' checked'}></label><div class="sub" id="sps" style="white-space:normal"></div><button class="sec" id="spd">Test connection speed</button><button class="sec" id="sx">Back up account &amp; chats (file)</button><button class="sec" id="spin">${st.me.pin?'Change or remove passcode':'Set app passcode'}</button>${st.me.pin?'<button class="sec" id="slk">Lock now</button>':''}<button class="sec" id="sdel" style="color:#d92d20">Sign out &amp; delete all data</button><p class="sub" style="white-space:normal">Message payloads are encrypted on this device with a shared AES-256-GCM room key before relay. This is a lightweight shared-key design, not an independently audited E2EE protocol: members can impersonate another sender, and anyone holding the invite link can read the room. Invite links cannot currently be revoked. The relay stores ciphertext for up to 7 days on its configured disk. Your passcode is only a local screen lock; it does not encrypt local data. Backups include private room keys but not media. Large files are transferred in chunks and may require both people to reconnect. Do not use LINK for highly sensitive conversations until it has had an independent security audit. LINK v1.0 beta.</p></div>`;
+  $('#ps').innerHTML=`<div style="padding:20px;display:grid;gap:22px"><h1 style="font-size:30px">Settings</h1><div class="sec" style="display:flex;gap:14px;align-items:center">${av(st.me.name,st.me.color,st.me.pic)}<div><b>${esc(st.me.name)}</b><div class="sub">@${esc(st.me.user||'you')} · stored on this device</div></div></div><button class="sec" id="sqr" style="text-align:center">My QR code</button><div style="display:flex;gap:10px"><button class="sec" id="spic" style="text-align:center">Change photo</button>${st.me.pic?'<button class="sec" id="spx" style="text-align:center">Remove</button>':''}</div><div><label>About you (shown on your profile)</label><input id="sbio" maxlength="80" value="${esc(st.me.bio||'')}"></div><div><label>Your name (shown to people you chat with)</label><input id="sn" value="${esc(st.me.name)}" maxlength="24"></div><div><label>Color</label><div class="sw" id="ssw"></div></div><div><label>Heading style</label><select id="sfd">${[['elegant','Elegant (Brown Sugar style)'],['classic','Classic'],['editorial','Editorial'],['marcel','Marcellus'],['clean','Clean']].map(([v,l])=>`<option value="${v}"${(st.fd||'elegant')===v?' selected':''}>${l}</option>`).join('')}</select></div><div><label>Chat text</label><select id="sfc">${[['default','Simple (default)'],['rounded','Rounded'],['humanist','Humanist'],['serif','Serif'],['classic','Classic'],['casual','Casual'],['typewriter','Typewriter'],['condensed','Condensed'],['mono','Mono']].map(([v,l])=>`<option value="${v}"${(st.fc||'default')===v?' selected':''}>${l}</option>`).join('')}</select></div><div><label>Text size</label><select id="sts">${[['s','Small'],['m','Normal'],['l','Large'],['xl','Extra large']].map(([v,l])=>`<option value="${v}"${(st.cs||'m')===v?' selected':''}>${l}</option>`).join('')}</select></div><div><label>Chat background</label><div class="sw" id="sbg" style="flex-wrap:wrap"></div><div style="display:flex;gap:10px"><button class="sec" id="sbu" style="text-align:center">Upload from gallery</button><button class="sec" id="sbr" style="text-align:center">Reset</button></div><label>Dim photo background</label><input type="range" id="sbd" min="0" max="70" value="${Math.round((st.bg&&st.bg.dim!=null?st.bg.dim:.3)*100)}"></div><div><label>Theme</label><select id="sth">${['system','light','dark'].map(t=>`<option value="${t}"${st.theme===t?' selected':''}>${t[0].toUpperCase()+t.slice(1)}</option>`).join('')}</select></div><label style="display:flex;justify-content:space-between;align-items:center;gap:12px"><span>Notifications<br><span class="sub">While LINK is open in the background</span></span><input type="checkbox" id="snt" style="width:auto"${st.notif?' checked':''}></label><label style="display:flex;justify-content:space-between;align-items:center"><span>Show message previews</span><input type="checkbox" id="spv" style="width:auto"${st.pv===0?'':' checked'}></label><label style="display:flex;justify-content:space-between;align-items:center"><span>Read receipts</span><input type="checkbox" id="srr" style="width:auto"${st.rr===0?'':' checked'}></label><label style="display:flex;justify-content:space-between;align-items:center"><span>Typing indicators</span><input type="checkbox" id="sty" style="width:auto"${st.ty===0?'':' checked'}></label><div class="sub" id="sps" style="white-space:normal"></div><button class="sec" id="spd">Test connection speed</button><button class="sec" id="sx">Back up account &amp; chats (file)</button><button class="sec" id="spin">${st.me.pin?'Change or remove passcode':'Set app passcode'}</button>${st.me.pin?'<button class="sec" id="slk">Lock now</button>':''}<button class="sec" id="sdel" style="color:#d92d20">Sign out &amp; delete all data</button><p class="sub" style="white-space:normal">Message payloads are encrypted on this device with a shared AES-256-GCM room key before relay. This is a lightweight shared-key design, not an independently audited E2EE protocol: members can impersonate another sender, and anyone holding the invite link can read the room. Invite links cannot currently be revoked. The relay stores ciphertext for up to 7 days on its configured disk. Your passcode is only a local screen lock; it does not encrypt local data. Backups include private room keys but not media. Large files are transferred in chunks and may require both people to reconnect. Do not use LINK for highly sensitive conversations until it has had an independent security audit. LINK v1.0 beta.</p></div>`;
   sw($('#ssw'),st.me.color,c=>{st.me.color=c;save();theme();Object.values(st.rooms).forEach(sendHi)});
+  $('#sqr').onclick=()=>qrOpen();
   $('#sn').onchange=e=>{st.me.name=e.target.value.trim()||st.me.name;save();Object.values(st.rooms).forEach(sendHi)};
   $('#sts').onchange=e=>{st.cs=e.target.value;save();fonts()};
   $('#sbg').innerHTML=PRE.map(([k,c])=>`<i data-k="${k}" style="background:${c};border-radius:10px;width:44px;height:44px;border:2px solid ${st.bg&&st.bg.v===k?'var(--t)':'var(--b)'}"></i>`).join('');
@@ -510,9 +530,51 @@ $('#wc').onclick=()=>show('onb');$('#ob').onclick=()=>show('wel');$('#wr').oncli
 $('#rf').onchange=async e=>{try{const j=JSON.parse(await e.target.files[0].text());if(!j.link||!j.me||!j.rooms)throw 0;st={me:j.me,theme:j.theme||'system',rooms:j.rooms};save();unl=0;boot()}catch{alert('That is not a valid LINK backup file.')}e.target.value=''};
 $('#lu').onclick=async()=>{if(await ph($('#lp').value,st.me.pin.s)===st.me.pin.h){unl=1;$('#lp').value='';$('#le').textContent='';boot()}else $('#le').textContent='Wrong passcode'};
 $('#lp').onkeydown=e=>{if(e.key==='Enter')$('#lu').click()};
+// Each account keeps its ECDH private key on this device. The server only stores the public key.
+const encodeText=s=>b64(new TextEncoder().encode(s));
+const decodeText=s=>new TextDecoder().decode(unb64(s));
+async function makeDh(){const pair=await crypto.subtle.generateKey({name:'ECDH',namedCurve:'P-256'},true,['deriveBits']);return {priv:await crypto.subtle.exportKey('jwk',pair.privateKey),pub:encodeText(JSON.stringify(await crypto.subtle.exportKey('jwk',pair.publicKey)))}}
+async function ensureDh(){if(!st.me)return;if(!st.me.dhPriv||!st.me.dhPub){const k=await makeDh();st.me.dhPriv=k.priv;st.me.dhPub=k.pub;save()}try{await fetch('/api/profile',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:st.me.id,username:st.me.user,name:st.me.name,publicKey:st.me.dhPub})})}catch{}}
+async function dmMaterial(friend){if(!st.me.dhPriv||!friend.publicKey)throw Error('Both people need to open the latest LINK version once before private chat can start.');const priv=await crypto.subtle.importKey('jwk',st.me.dhPriv,{name:'ECDH',namedCurve:'P-256'},false,['deriveBits']),pub=await crypto.subtle.importKey('jwk',JSON.parse(decodeText(friend.publicKey)),{name:'ECDH',namedCurve:'P-256'},false,[]),shared=await crypto.subtle.deriveBits({name:'ECDH',public:pub},priv,256),ids=[st.me.id,friend.id].sort(),hash=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(ids.join(':')))),rid='pv--'+[...hash.slice(0,20)].map(x=>x.toString(16).padStart(2,'0')).join(''),base=await crypto.subtle.importKey('raw',shared,'HKDF',false,['deriveBits']),bits=new Uint8Array(await crypto.subtle.deriveBits({name:'HKDF',hash:'SHA-256',salt:hash,info:new TextEncoder().encode('LINK friend DM v1')},base,384));return {id:rid,key:b64(bits.slice(0,32)),token:b64(bits.slice(32,48))}}
+let friendCache=[],lastIncomingRequests=null;
+async function refreshFriends(){const status=$('#friendStatus');try{await ensureDh();const r=await fetch('/api/friends?id='+encodeURIComponent(st.me.id)),j=await r.json();if(!r.ok||!j.ok)throw Error(j.error||'Could not load friends.');friendCache=j.friends||[];renderFriends();const count=friendCache.filter(x=>x.status==='pending'&&x.toId===st.me.id).length;$('#bf').textContent=count?'Friends ('+count+')':'Friends';lastIncomingRequests=count;status.textContent='Updated';}catch(e){status.textContent=e.message||'Could not load friends.'}}
+function renderFriends(){const incoming=friendCache.filter(x=>x.status==='pending'&&x.toId===st.me.id),outgoing=friendCache.filter(x=>x.status==='pending'&&x.fromId===st.me.id),friends=friendCache.filter(x=>x.status==='accepted');$('#friendRequests').innerHTML=(incoming.length?'<div class="lbl">Friend requests</div>':'')+incoming.map(x=>`<div class="row">${av(x.name,PAL[0])}<div class="grow"><b>${esc(x.name)}</b><div class="sub">@${esc(x.username)}</div></div><button class="pill p" data-accept="${esc(x.id)}">Accept</button><button class="pill" data-reject="${esc(x.id)}">Decline</button></div>`).join('')+(outgoing.length?'<div class="lbl">Sent requests</div>'+outgoing.map(x=>`<div class="row">${av(x.name,PAL[5])}<div class="grow"><b>${esc(x.name)}</b><div class="sub">@${esc(x.username)} · Pending</div></div></div>`).join(''):'');$('#friendList').innerHTML='<div class="lbl">Your friends</div>'+(friends.length?friends.map(x=>`<div class="row">${av(x.name,PAL[1])}<div class="grow"><b>${esc(x.name)}</b><div class="sub">@${esc(x.username)}</div></div><button class="pill p" data-message="${esc(x.id)}">Message</button></div>`).join(''):'<p class="sub" style="padding:16px 4px">No friends yet. Search for someone above.</p>')}
+async function addFriend(){const username=$('#friendSearch').value.trim().replace(/^@/,'').toLowerCase();if(!/^[a-z0-9_]{3,20}$/.test(username))return $('#friendStatus').textContent='Enter a valid username (3–20 letters, numbers or underscores).';$('#friendStatus').textContent='Sending request…';try{const r=await fetch('/api/friends/request',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({from:st.me.id,username})}),j=await r.json();if(!r.ok)throw Error(j.error||'Could not send request.');$('#friendStatus').textContent=j.accepted?'You are now friends!':'Friend request sent.';$('#friendSearch').value='';await refreshFriends()}catch(e){$('#friendStatus').textContent=e.message}}
+async function respondFriend(from,accept){try{const r=await fetch('/api/friends/respond',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({to:st.me.id,from,accept})}),j=await r.json();if(!r.ok)throw Error(j.error||'Could not update request.');await refreshFriends()}catch(e){$('#friendStatus').textContent=e.message}}
+async function startFriendChat(id){const f=friendCache.find(x=>x.id===id&&x.status==='accepted');if(!f)return;try{await ensureDh();const mat=await dmMaterial(f);st.ct??={};st.ct[mat.id]=mat.token;const name='@'+f.username,r=addRoom(mat.id,mat.key,name,0,2);r.kind='friend';r.name=f.name;r.peers??={};r.peers[f.id]={name:f.name,color:PAL[1],user:f.username};save();if(!r.startedFriend){r.startedFriend=1;joinSeat(r.id,2).then(ok=>{if(ok===false)alert('Could not join this private chat.');else if(ok)sendHi(r)});}if($('#dFriends').open)$('#dFriends').close();if($('#dProf').open)$('#dProf').close();open(r.id)}catch(e){alert(e.message||'Could not start private chat.')}}
+async function showPublicProfile(username){
+  const dlg=$('#dProf');dlg.innerHTML='<div style="padding:24px;text-align:center">Loading profile…</div>';dlg.showModal();
+  try{
+    const [pr]=await Promise.all([fetch('/api/profile/'+encodeURIComponent(username)).then(r=>r.json()),ensureDh()]);
+    if(!pr.ok)throw Error(pr.error||'Profile not found.');
+    const profile=pr.profile;let relation=null;
+    if(st.me.user!==profile.username){const fr=await fetch('/api/friends?id='+encodeURIComponent(st.me.id)).then(r=>r.json());if(fr.ok){friendCache=fr.friends||[];relation=friendCache.find(x=>x.username===profile.username)||null;}}
+    let action='';
+    if(st.me.user===profile.username)action='<div class="sub">This is your profile.</div>';
+    else if(relation?.status==='accepted')action=`<button class="pri" data-profile-message="${esc(relation.id)}">Message</button><div class="sub">You are friends on LINK.</div>`;
+    else if(relation?.status==='pending'&&relation.toId===st.me.id)action=`<button class="pri" data-profile-accept="${esc(relation.fromId)}">Accept friend request</button><button class="sec" data-profile-decline="${esc(relation.fromId)}">Decline</button><div class="sub">This person sent you a friend request.</div>`;
+    else if(relation?.status==='pending')action='<button class="sec" disabled>Request sent</button><div class="sub">Your friend request is waiting for a response.</div>';
+    else action='<button class="pri" data-profile-add="'+esc(profile.username)+'"><span aria-hidden="true">＋</span> Add Friend</button>';
+    dlg.innerHTML=`<div style="display:grid;gap:13px;text-align:center;padding:24px"><div style="width:68px;height:68px;border-radius:50%;display:grid;place-items:center;margin:auto;background:var(--s);font-size:30px;font-weight:700">${esc(profile.name.slice(0,1).toUpperCase())}</div><b style="font-size:22px">${esc(profile.name)}</b><div class="sub">@${esc(profile.username)}</div><div class="sub">LINK profile</div>${action}<button class="sec" data-profile-close>Done</button></div>`;
+  }catch(e){dlg.innerHTML=`<div style="display:grid;gap:14px;padding:24px;text-align:center"><b>Profile unavailable</b><div class="sub">${esc(e.message||'This LINK profile could not be found.')}</div><button class="sec" data-profile-close>Close</button></div>`;}
+}
+$('#dProf').addEventListener('click',async e=>{
+  const add=e.target.closest('[data-profile-add]'),accept=e.target.closest('[data-profile-accept]'),decline=e.target.closest('[data-profile-decline]'),message=e.target.closest('[data-profile-message]'),closeBtn=e.target.closest('[data-profile-close]');
+  if(closeBtn){$('#dProf').close();return;}
+  if(add){const username=add.dataset.profileAdd;add.disabled=true;try{const r=await fetch('/api/friends/request',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({from:st.me.id,username})}),j=await r.json();if(!r.ok)throw Error(j.error||'Could not send request.');await showPublicProfile(username);}catch(err){alert(err.message||'Could not send friend request.');add.disabled=false;}return;}
+  if(accept||decline){await respondFriend((accept||decline).dataset.profileAccept||(decline&&decline.dataset.profileDecline),!!accept);const username=$('#dProf').querySelector('[data-profile-add]')?.dataset.profileAdd||$('#dProf').querySelector('.sub')?.textContent?.replace(/^@/,'');if(username)await showPublicProfile(username);else $('#dProf').close();return;}
+  if(message){startFriendChat(message.dataset.profileMessage);return;}
+});
+async function pollFriendRequests(){if(!st.me||document.hidden)return;try{const r=await fetch('/api/friends?id='+encodeURIComponent(st.me.id)),j=await r.json();if(!r.ok||!j.ok)return;friendCache=j.friends||[];const count=friendCache.filter(x=>x.status==='pending'&&x.toId===st.me.id).length;$('#bf').textContent=count?'Friends ('+count+')':'Friends';if(lastIncomingRequests!==null&&count>lastIncomingRequests&&st.notif&&'Notification'in window&&Notification.permission==='granted')new Notification('LINK',{body:'You have a new friend request.'});lastIncomingRequests=count;if($('#dFriends').open)renderFriends()}catch{}}
+setInterval(pollFriendRequests,25000);
+$('#bf').onclick=()=>{$('#dFriends').showModal();refreshFriends()};$('#friendAdd').onclick=addFriend;$('#friendSearch').onkeydown=e=>{if(e.key==='Enter')addFriend()};$('#friendRefresh').onclick=refreshFriends;setInterval(()=>{if($('#dFriends').open)refreshFriends()},20000);$('#friendRequests').onclick=e=>{const a=e.target.closest('[data-accept]'),d=e.target.closest('[data-reject]');if(a)respondFriend(a.dataset.accept,true);if(d)respondFriend(d.dataset.reject,false)};$('#friendList').onclick=e=>{const b=e.target.closest('[data-message]');if(b)startFriendChat(b.dataset.message)};
+
+let usernameCheckTimer;async function checkUsername(){const el=$('#ouser'),v=el.value.trim().toLowerCase().replace(/^@/,''),out=$('#unameStatus');clearTimeout(usernameCheckTimer);if(!v){out.textContent='Choose a username to check availability.';out.style.color='';return}if(!/^[a-z0-9_]{3,20}$/.test(v)){out.textContent='Use 3–20 lowercase letters, numbers or underscores.';out.style.color='#d92d20';return}out.textContent='Checking availability…';out.style.color='';try{const r=await fetch('/api/username/check?u='+encodeURIComponent(v));const j=await r.json();out.textContent=j.available?'✓ Username is available':'✕ Username is already taken';out.style.color=j.available?'#16834a':'#d92d20'}catch{out.textContent='Could not verify right now. Check your connection.';out.style.color='#d92d20'}}
+$('#ouser').addEventListener('input',()=>{clearTimeout(usernameCheckTimer);usernameCheckTimer=setTimeout(checkUsername,350)});$('#ouser').addEventListener('blur',checkUsername);
 $('#ogo').onclick=async()=>{const n=$('#oname').value.trim(),u=$('#ouser').value.trim().toLowerCase().replace(/^@/,''),p=$('#opin').value.trim(),er=$('#oerr');er.textContent='';
-  if(!n)return $('#oname').focus();if(u&&!/^[a-z0-9_]{3,20}$/.test(u))return er.textContent='Username: 3–20 letters, numbers or _';if(p&&!/^\d{4,8}$/.test(p))return er.textContent='Passcode: 4 to 8 digits';
-  st.me={id:rnd(9),name:n,user:u||n.toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,20)||'user',color:oc};if(p){const x=rnd(8);st.me.pin={s:x,h:await ph(p,x)}}unl=1;save();boot()};
+  if(!n)return $('#oname').focus();if(!/^[a-z0-9_]{3,20}$/.test(u))return er.textContent='Username: 3–20 letters, numbers or _';if(p&&!/^\d{4,8}$/.test(p))return er.textContent='Passcode: 4 to 8 digits';
+  const id=rnd(9);let dh;try{dh=await makeDh();const c=await fetch('/api/username/check?u='+encodeURIComponent(u));const cj=await c.json();if(!c.ok||!cj.available)return er.textContent='That username is unavailable. Choose another.';const reg=await fetch('/api/profile',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id,username:u,name:n,publicKey:dh.pub})});const rj=await reg.json();if(!reg.ok)return er.textContent=rj.error||'Could not verify username.';}catch{return er.textContent='Could not verify your username. Check your connection and try again.'}
+  st.me={id,name:n,user:u,color:oc,dhPriv:dh.priv,dhPub:dh.pub};if(p){const x=rnd(8);st.me.pin={s:x,h:await ph(p,x)}}unl=1;save();boot()};
 $('#tc').onclick=$('#ts').onclick=e=>{const s=e.currentTarget.id==='ts';$('#tc').classList.toggle('on',!s);$('#ts').classList.toggle('on',s);$('#pc').classList.toggle('on',!s);$('#ps').classList.toggle('on',s);$('#home').classList.toggle('set',s);if(s)sets()};
 $('#q').oninput=list;
 $('#rooms').onclick=e=>{const b=e.target.closest('[data-r]');if(b)open(b.dataset.r)};
@@ -601,8 +663,8 @@ addEventListener('online',()=>Object.values(st.rooms).forEach(flush));
 function boot(){
   theme();fonts();fit();if(!st.me)return show('wel');if(st.me.pin&&!unl){$('#lh').textContent='Welcome back, '+st.me.name;return show('lock')}
   if(!crypto.subtle)alert('LINK needs a secure (https) address to encrypt messages.');
-  show('home');Object.values(st.rooms).forEach(connect);list();
-  const p=parse(location.hash);if(p){history.replaceState(null,'',location.pathname);if(st.rooms[p.id])open(p.id);else{$('#jl').value=lnk(p);$('#jl').oninput();$('#dJoin').showModal()}}
+  show('home');ensureDh();Object.values(st.rooms).forEach(connect);list();
+  const profile=String(location.hash).match(/^#f=([^&]+)/);if(profile){const username=decodeURIComponent(profile[1]).toLowerCase();history.replaceState(null,'',location.pathname);showPublicProfile(username);}const p=parse(location.hash);if(p){history.replaceState(null,'',location.pathname);if(st.rooms[p.id])open(p.id);else{$('#jl').value=lnk(p);$('#jl').oninput();$('#dJoin').showModal()}}
 }
 (async()=>{if(!st.me){try{const j=await mget('state'),o=j&&JSON.parse(j);if(o&&o.me){st=o;st.archived??={};LS.link=j}}catch{}}
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});boot()})();
@@ -613,14 +675,115 @@ if('serviceWorker' in navigator && location.protocol==='https:') navigator.servi
 ;{const hsl2hex=(h,s,l)=>{s/=100;l/=100;const a=s*Math.min(l,1-l),f=n=>{const k=(n+h/30)%12,c=l-a*Math.max(Math.min(k-3,9-k,1),-1);return Math.round(255*c).toString(16).padStart(2,'0')};return'#'+f(0)+f(8)+f(4)};
 const hex2hsl=x=>{const r=parseInt(x.slice(1,3),16)/255,g=parseInt(x.slice(3,5),16)/255,b=parseInt(x.slice(5,7),16)/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2;let h=0,s=0;if(mx!==mn){const d=mx-mn;s=l>.5?d/(2-mx-mn):d/(mx+mn);h=mx===r?(g-b)/d+(g<b?6:0):mx===g?(b-r)/d+2:(r-g)/d+4;h*=60}return[Math.round(h),Math.round(s*100),Math.round(l*100)]};
 const H=$('#colH'),S=$('#colS'),L=$('#colL'),X=$('#colX'),D=$('#dCol');let done=null;
-const clampL=l=>Math.min(65,Math.max(20,l));
-const paint=()=>{const h=+H.value,s=+S.value,l=+L.value,x=hsl2hex(h,s,l);$('#colPv').style.background=x;X.value=x.toUpperCase();
+const clampL=l=>Math.min(+L.max,Math.max(+L.min,l));
+const paint=()=>{const h=+H.value,s=+S.value,l=+L.value,x=hsl2hex(h,s,l);$('#colPv').style.background=x;$('#colPv').style.color=l>60?'#111827':'#fff';X.value=x.toUpperCase();
   H.style.setProperty('--trk','linear-gradient(90deg,'+[0,60,120,180,240,300,360].map(k=>hsl2hex(k,90,50)).join(',')+')');
   S.style.setProperty('--trk',`linear-gradient(90deg,${hsl2hex(h,0,l)},${hsl2hex(h,100,l)})`);
-  L.style.setProperty('--trk',`linear-gradient(90deg,${hsl2hex(h,s,20)},${hsl2hex(h,s,65)})`)};
+  L.style.setProperty('--trk',`linear-gradient(90deg,${hsl2hex(h,s,+L.min)},${hsl2hex(h,s,+L.max)})`)};
 const load=x=>{const[h,s,l]=hex2hsl(x);H.value=h;S.value=s;L.value=clampL(l)};
-window.cpick=(init,cb)=>{load(/^#[0-9a-f]{6}$/i.test(init)?init:PAL[0]);done=cb;paint();D.showModal()};
+window.cpick=(init,cb,rg)=>{const r=rg||[20,65];L.min=r[0];L.max=r[1];load(/^#[0-9a-f]{6}$/i.test(init)?init:PAL[0]);done=cb;paint();D.showModal()};
 [H,S,L].forEach(i=>i.oninput=paint);
 X.oninput=()=>{let v=X.value.trim();if(v[0]!=='#')v='#'+v;if(/^#[0-9a-f]{6}$/i.test(v)){load(v);const keep=X.selectionStart;paint();try{X.setSelectionRange(keep,keep)}catch{}}};
 $('#colOk').onclick=()=>{const x=hsl2hex(+H.value,+S.value,+L.value);D.close();done&&done(x)}}
+
+;const qrEncode=(text,lv)=>{
+  const li={L:0,M:1,Q:2,H:3}[lv];if(li===undefined)throw new Error('level');
+  const ECW=[[-1,7,10,15,20,26,18,20,24,30,18,20,24,26,30,22],[-1,10,16,26,18,24,16,18,22,22,26,30,22,22,24,24],[-1,13,22,18,26,18,24,18,22,20,24,28,26,24,20,30],[-1,17,28,22,16,22,28,26,26,24,28,24,28,22,24,24]][li];
+  const NB=[[-1,1,1,1,1,1,2,2,2,2,4,4,4,4,4,6],[-1,1,1,1,2,2,4,4,4,5,5,5,8,9,9,10],[-1,1,1,2,2,4,4,6,6,8,8,8,10,12,16,12],[-1,1,1,2,4,4,4,5,6,8,8,11,11,16,16,18]][li];
+  const FB=[1,0,3,2][li];
+  const raw=v=>{let r=(16*v+128)*v+64;if(v>=2){const n=Math.floor(v/7)+2;r-=(25*n-10)*n-55;if(v>=7)r-=36}return r};
+  const data=[...new TextEncoder().encode(String(text))];
+  let v=1,cap=0;
+  for(;v<=15;v++){cap=(Math.floor(raw(v)/8)-ECW[v]*NB[v])*8;if(4+(v<10?8:16)+data.length*8<=cap)break}
+  if(v>15)return null;
+  const bb=[],put=(val,len)=>{for(let i=len-1;i>=0;i--)bb.push((val>>>i)&1)};
+  put(4,4);put(data.length,v<10?8:16);data.forEach(b=>put(b,8));put(0,Math.min(4,cap-bb.length));while(bb.length%8)bb.push(0);
+  for(let p=0xEC;bb.length<cap;p^=0xEC^0x11)put(p,8);
+  const cw=[];for(let i=0;i<bb.length;i+=8){let x=0;for(let j=0;j<8;j++)x=(x<<1)|bb[i+j];cw.push(x)}
+  // Reed-Solomon over GF(256)
+  const mul=(x,y)=>{let z=0;for(let i=7;i>=0;i--){z=(z<<1)^((z>>>7)*0x11D);z^=((y>>>i)&1)*x}return z};
+  const div=n=>{const r=new Array(n).fill(0);r[n-1]=1;let root=1;for(let i=0;i<n;i++){for(let j=0;j<n;j++){r[j]=mul(r[j],root);if(j+1<n)r[j]^=r[j+1]}root=mul(root,2)}return r};
+  const rem=(d,dv)=>{const r=new Array(dv.length).fill(0);for(const b of d){const f=b^r.shift();r.push(0);dv.forEach((c,i)=>{r[i]^=mul(c,f)})}return r};
+  const nb=NB[v],el=ECW[v],rc=Math.floor(raw(v)/8),ns=nb-rc%nb,sl=Math.floor(rc/nb),dv=div(el),blocks=[];
+  for(let i=0,k=0;i<nb;i++){const d=cw.slice(k,k+sl-el+(i<ns?0:1));k+=d.length;const e=rem(d,dv);if(i<ns)d.push(0);blocks.push(d.concat(e))}
+  const out=[];for(let i=0;i<blocks[0].length;i++)blocks.forEach((b,j)=>{if(i!==sl-el||j>=ns)out.push(b[i])});
+  // matrix
+  const size=v*4+17,m=Array.from({length:size},()=>new Array(size).fill(false)),f=Array.from({length:size},()=>new Array(size).fill(false));
+  const setF=(x,y,d)=>{m[y][x]=d;f[y][x]=true};
+  for(let i=0;i<size;i++){setF(6,i,i%2===0);setF(i,6,i%2===0)}
+  const finder=(cx,cy)=>{for(let dy=-4;dy<=4;dy++)for(let dx=-4;dx<=4;dx++){const x=cx+dx,y=cy+dy;if(x>=0&&x<size&&y>=0&&y<size){const d=Math.max(Math.abs(dx),Math.abs(dy));setF(x,y,d!==2&&d!==4)}}};
+  finder(3,3);finder(size-4,3);finder(3,size-4);
+  let ap=[];if(v>1){const n=Math.floor(v/7)+2,st=v===32?26:Math.ceil((v*4+4)/(n*2-2))*2;ap=[6];for(let p=size-7;ap.length<n;p-=st)ap.splice(1,0,p)}
+  for(let i=0;i<ap.length;i++)for(let j=0;j<ap.length;j++){if((i===0&&j===0)||(i===0&&j===ap.length-1)||(i===ap.length-1&&j===0))continue;for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)setF(ap[i]+dx,ap[j]+dy,Math.max(Math.abs(dx),Math.abs(dy))!==1)}
+  const fmt=mask=>{const d=(FB<<3)|mask;let r=d;for(let i=0;i<10;i++)r=(r<<1)^((r>>>9)*0x537);const bits=((d<<10)|r)^0x5412,g=i=>((bits>>>i)&1)!==0;
+    for(let i=0;i<=5;i++)setF(8,i,g(i));setF(8,7,g(6));setF(8,8,g(7));setF(7,8,g(8));for(let i=9;i<15;i++)setF(14-i,8,g(i));
+    for(let i=0;i<8;i++)setF(size-1-i,8,g(i));for(let i=8;i<15;i++)setF(8,size-15+i,g(i));setF(8,size-8,true)};
+  fmt(0);
+  if(v>=7){let r=v;for(let i=0;i<12;i++)r=(r<<1)^((r>>>11)*0x1F25);const bits=(v<<12)|r;for(let i=0;i<18;i++){const b=((bits>>>i)&1)!==0,a=size-11+i%3,c=Math.floor(i/3);setF(a,c,b);setF(c,a,b)}}
+  let bi=0;for(let right=size-1;right>=1;right-=2){if(right===6)right=5;for(let vert=0;vert<size;vert++)for(let j=0;j<2;j++){const x=right-j,up=((right+1)&2)===0,y=up?size-1-vert:vert;if(!f[y][x]&&bi<out.length*8){m[y][x]=((out[bi>>>3]>>>(7-(bi&7)))&1)!==0;bi++}}}
+  const MASK=[(x,y)=>(x+y)%2===0,(x,y)=>y%2===0,(x,y)=>x%3===0,(x,y)=>(x+y)%3===0,(x,y)=>(Math.floor(x/3)+Math.floor(y/2))%2===0,(x,y)=>x*y%2+x*y%3===0,(x,y)=>(x*y%2+x*y%3)%2===0,(x,y)=>((x+y)%2+x*y%3)%2===0];
+  const apply=k=>{for(let y=0;y<size;y++)for(let x=0;x<size;x++)if(!f[y][x]&&MASK[k](x,y))m[y][x]=!m[y][x]};
+  const score=()=>{let p=0,dark=0;
+    for(let pass=0;pass<2;pass++)for(let a=0;a<size;a++){let run=1,s='';for(let b=0;b<size;b++){const c=pass?m[b][a]:m[a][b];s+=c?'1':'0';if(c)dark++;if(b>0){const pc=pass?m[b-1][a]:m[a][b-1];if(c===pc){run++;if(run===5)p+=3;else if(run>5)p++}else run=1}}p+=((s.match(/(?=(00001011101|10111010000))/g)||[]).length)*40}
+    for(let y=0;y<size-1;y++)for(let x=0;x<size-1;x++)if(m[y][x]===m[y][x+1]&&m[y][x]===m[y+1][x]&&m[y][x]===m[y+1][x+1])p+=3;
+    const t=size*size;dark/=2;p+=(Math.ceil(Math.abs(dark*20-t*10)/t)-1)*10;return p};
+  let best=0,bs=Infinity;for(let k=0;k<8;k++){apply(k);fmt(k);const s=score();if(s<bs){bs=s;best=k}apply(k)}
+  apply(best);fmt(best);
+  return {size,version:v,m:m.map(r=>r.slice())};
+};
+
+;{ // ===== My QR code (customisable, saved as PNG) =====
+const GR={g1:['#2563eb','#9333ea'],g2:['#059669','#0ea5e9'],g3:['#e11d48','#f59e0b'],h1:['#ffffff','#dbeafe'],h2:['#fff7ed','#fce7f3'],h3:['#ecfeff','#ede9fe']};
+const FGS=['#111827','#1d4ed8','#0f766e','#7e22ce','#be123c','#c2410c','g1','g2','g3'],BGS=['#ffffff','#f8f5ee','#e0f2fe','#fce7f3','#dcfce7','#111827','h1','h2','h3'];
+const SHAPES=[['smooth','Smooth'],['rounded','Rounded'],['dots','Dots'],['square','Square']],EYES=[['soft','Soft'],['rounded','Round'],['circle','Circle'],['square','Square']];
+const DEF={shape:'smooth',eye:'soft',fg:'#111827',bg:'#ffffff',centre:'initial'};
+const okc=c=>/^#[0-9a-f]{6}$/i.test(c)||(typeof c==='string'&&c in GR);
+const get=()=>{const q=st.me.qr||{};return{shape:SHAPES.some(x=>x[0]===q.shape)?q.shape:DEF.shape,eye:EYES.some(x=>x[0]===q.eye)?q.eye:DEF.eye,fg:okc(q.fg)?q.fg:DEF.fg,bg:okc(q.bg)?q.bg:DEF.bg,centre:['off','initial','photo'].includes(q.centre)?q.centre:DEF.centre}};
+const stops=c=>GR[c]||[c];
+const lum=h=>{const f=i=>{const v=parseInt(h.slice(i,i+2),16)/255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};return .2126*f(1)+.7152*f(3)+.0722*f(5)};
+const css=c=>GR[c]?`linear-gradient(135deg,${GR[c].join(',')})`:c;
+const link=()=>`${location.origin}/#f=${encodeURIComponent(st.me.user||'user')}`;
+const cv=$('#qrPrev'),W=1080,H=1350;let tok=0,imgCache={};
+const paint=(ctx,c,x0,y0,x1,y1)=>{if(!GR[c])return c;const g=ctx.createLinearGradient(x0,y0,x1,y1),s=GR[c];s.forEach((k,i)=>g.addColorStop(i/(s.length-1),k));return g};
+const rr=(p,x,y,w,h,r)=>{const[a,b,c,d]=r;p.moveTo(x+a,y);p.lineTo(x+w-b,y);b?p.arcTo(x+w,y,x+w,y+b,b):p.lineTo(x+w,y);p.lineTo(x+w,y+h-c);c?p.arcTo(x+w,y+h,x+w-c,y+h,c):p.lineTo(x+w,y+h);p.lineTo(x+d,y+h);d?p.arcTo(x,y+h,x,y+h-d,d):p.lineTo(x,y+h);p.lineTo(x,y+a);a?p.arcTo(x,y,x+a,y,a):p.lineTo(x,y);p.closePath()};
+const loadImg=src=>new Promise(r=>{if(imgCache[src])return r(imgCache[src]);const i=new Image();i.onload=()=>r(imgCache[src]=i);i.onerror=()=>r(null);i.src=src});
+const warn=o=>{const fl=Math.max(...stops(o.fg).map(lum)),bl=Math.min(...stops(o.bg).map(lum));if(fl>bl)return'Light-on-dark codes do not scan on some phones. For the best result, use a dark code on a light background.';const r=(bl+.05)/(fl+.05);return r<3?'Low contrast: this code may not scan. Pick a darker code or a lighter background.':(o.eye==='rounded'||o.eye==='circle'?'Very round corners can fail to scan on some older phones. Test with another phone before sharing.':'')};
+async function draw(o){
+  const t=++tok,ctx=cv.getContext('2d'),lv=o.centre==='off'?'M':'H',q=qrEncode(link(),lv);if(!q)return;
+  const n=q.size,S=760,qx=(W-S)/2,qy=200,mp=S/n,bl=stops(o.bg),bgl=Math.min(...bl.map(lum)),txt=bgl>.4?'#111827':'#ffffff';
+  const photo=o.centre==='photo'&&st.me.pic?await loadImg(st.me.pic):null;if(t!==tok)return;
+  ctx.clearRect(0,0,W,H);ctx.fillStyle=paint(ctx,o.bg,0,0,W,H);ctx.fillRect(0,0,W,H);
+  const fs=paint(ctx,o.fg,qx,qy,qx+S,qy+S),inEye=(x,y)=>(x<7&&y<7)||(x>=n-7&&y<7)||(x<7&&y>=n-7),d=(x,y)=>x>=0&&y>=0&&x<n&&y<n&&q.m[y][x]&&true;
+  const p=new Path2D();
+  for(let y=0;y<n;y++)for(let x=0;x<n;x++){if(!q.m[y][x]||inEye(x,y))continue;const px=qx+x*mp,py=qy+y*mp;
+    if(o.shape==='square')p.rect(Math.floor(px),Math.floor(py),Math.ceil(px+mp)-Math.floor(px),Math.ceil(py+mp)-Math.floor(py));
+    else if(o.shape==='dots'){p.moveTo(px+mp*.5+mp*.49,py+mp*.5);p.arc(px+mp*.5,py+mp*.5,mp*.49,0,Math.PI*2)}
+    else if(o.shape==='rounded')rr(p,px+mp*.04,py+mp*.04,mp*.92,mp*.92,[mp*.3,mp*.3,mp*.3,mp*.3]);
+    else{const u=d(x,y-1),dn=d(x,y+1),l=d(x-1,y),r=d(x+1,y),R=mp*.5;rr(p,px,py,mp,mp,[!u&&!l?R:0,!u&&!r?R:0,!dn&&!r?R:0,!dn&&!l?R:0])}}
+  ctx.fillStyle=fs;ctx.fill(p);
+  [[0,0],[n-7,0],[0,n-7]].forEach(([ex,ey])=>{const e=new Path2D(),x=qx+ex*mp,y=qy+ey*mp;
+    if(o.eye==='circle'){[[3.5,3.5,3.5],[3.5,3.5,2.5],[3.5,3.5,1.5]].forEach(([a,b,r])=>{e.moveTo(x+(a+r)*mp,y+b*mp);e.arc(x+a*mp,y+b*mp,r*mp,0,Math.PI*2)})}
+    else{const rd=o.eye==='soft'?[1.2,.6,.5]:o.eye==='rounded'?[2.2,1.3,.9]:[0,0,0];[[0,7,rd[0]],[1,5,rd[1]],[2,3,rd[2]]].forEach(([i,s,r])=>rr(e,x+i*mp,y+i*mp,s*mp,s*mp,[r*mp,r*mp,r*mp,r*mp]))}
+    ctx.fill(e,'evenodd')});
+  if(o.centre!=='off'){const cx=W/2,cy=qy+S/2,R=S*.12;ctx.fillStyle=bl[0];ctx.beginPath();ctx.arc(cx,cy,R+12,0,Math.PI*2);ctx.fill();
+    if(photo){ctx.save();ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.clip();const m=Math.min(photo.width,photo.height);ctx.drawImage(photo,(photo.width-m)/2,(photo.height-m)/2,m,m,cx-R,cy-R,R*2,R*2);ctx.restore()}
+    else{ctx.fillStyle=GR[o.fg]?GR[o.fg][0]:o.fg;ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.font=`700 ${Math.round(R*1.15)}px system-ui,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(([...(st.me.name||'?')][0]||'?').toUpperCase(),cx,cy+R*.06)}}
+  ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.fillStyle=txt;ctx.globalAlpha=.6;ctx.font='600 34px system-ui,sans-serif';try{ctx.letterSpacing='6px'}catch{}ctx.fillText('ADD ME ON LINK',W/2,118);try{ctx.letterSpacing='0px'}catch{}ctx.globalAlpha=1;
+  let fz=68;const nm=st.me.name||'';ctx.font=`700 ${fz}px system-ui,sans-serif`;while(ctx.measureText(nm).width>W-160&&fz>30){fz-=2;ctx.font=`700 ${fz}px system-ui,sans-serif`}ctx.fillText(nm,W/2,1088);
+  ctx.globalAlpha=.65;ctx.font='500 42px system-ui,sans-serif';ctx.fillText('@'+(st.me.user||'user'),W/2,1152);ctx.font='500 32px system-ui,sans-serif';ctx.fillText('Scan with any camera',W/2,1262);ctx.globalAlpha=1}
+const D=$('#dQr');let o=get(),busy=0;
+const row=(id,list,key)=>{const el=$(id);el.innerHTML=list.map(([k,l])=>`<button data-k="${k}" class="${o[key]===k?'on':''}"${key==='centre'&&k==='photo'&&!st.me.pic?' disabled':''}>${l}</button>`).join('');el.onclick=e=>{const k=e.target.dataset.k;if(k&&!e.target.disabled){o[key]=k;ui()}}};
+const swr=(id,list,key,rng)=>{const el=$(id),v=o[key],cu=!list.includes(v);el.innerHTML=list.map(x=>`<i data-c="${x}" class="${x===v?'on':''}" style="background:${css(x)}"></i>`).join('')+(cu?`<i data-c="${v}" class="on" style="background:${v}"></i>`:'')+'<i data-c="custom" class="cust" role="button" aria-label="Custom colour"></i>';
+  el.onclick=e=>{const k=e.target.dataset.c;if(!k)return;if(k==='custom')return cpick(/^#/.test(v)?v:stops(v)[0],x=>{o[key]=x;ui()},rng);o[key]=k;ui()}};
+function ui(){row('#qrShape',SHAPES,'shape');row('#qrEye',EYES,'eye');row('#qrCentre',[['off','Off'],['initial','Initial'],['photo','Photo']],'centre');swr('#qrFg',FGS,'fg',[5,55]);swr('#qrBg',BGS,'bg',[30,98]);$('#qrWarn').textContent=warn(o);st.me.qr={...o};save();draw(o)}
+window.qrOpen=()=>{o=get();$('#qrSv').textContent='Save image';ui();D.showModal()};
+const blob=()=>new Promise(r=>cv.toBlob(r,'image/png'));const fname=()=>`link-qr-${(st.me.user||'me').replace(/[^a-z0-9._-]/gi,'')}.png`;
+const flash=(b,t)=>{const k=b.dataset.t||(b.dataset.t=b.textContent);b.textContent=t;setTimeout(()=>{b.textContent=k},1800)};
+const save_=async()=>{await draw(o);const b=await blob();if(!b)return false;const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=fname();document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);return true};
+$('#qrSv').onclick=async e=>{if(busy)return;busy=1;try{if(await save_())flash(e.target,'Saved ✓')}finally{busy=0}};
+$('#qrSh').onclick=async e=>{if(busy)return;busy=1;try{await draw(o);const b=await blob();if(!b)return;const f=new File([b],fname(),{type:'image/png'});
+  if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:'My LINK QR code',text:'Scan to chat with me on LINK'})}catch(x){if(x&&x.name!=='AbortError')await save_()}}else if(await save_())flash(e.target,'Saved ✓')}finally{busy=0}};
+$('#qrCp').onclick=async e=>{try{await navigator.clipboard.writeText(link());flash(e.target,'Copied ✓')}catch{prompt('Copy your LINK profile link',link())}};
+}
+
 </script></body></html>

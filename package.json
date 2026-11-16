@@ -1,6 +1,6 @@
 {
   "name": "link-private-chat",
-  "version": "1.4.0-alpha.2",
+  "version": "1.4.0-alpha.7",
   "private": true,
   "description": "LINK lightweight encrypted-chat beta",
   "main": "server.js",

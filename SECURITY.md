@@ -30,3 +30,11 @@ The app stores account/profile data, room keys, chat metadata and text in localS
 ## Reporting
 
 For a suspected vulnerability, do not post exploit details publicly. Contact the project maintainer through a private channel and include the affected version, impact and a reproducible description. No formal security response SLA is currently provided.
+
+
+## Friends feature beta limitation
+
+The alpha.6 Friends feature derives direct-chat keys locally using ECDH P-256 and HKDF. The relay stores public keys and encrypted message payloads, not the derived AES key. However, profile IDs are still device-generated and there is no server-authenticated account credential yet. Do not use friend relationships as proof of identity; an attacker who obtains an account ID may be able to submit friend actions as that account. A production release should add authenticated sessions/passkeys and bind every friend endpoint to the authenticated account before relying on this feature.
+
+
+The alpha.7 QR profile action is a convenience UI over the existing alpha.6 friend endpoints. It does not add account authentication. The app still uses device-generated account IDs, so friend actions must not be treated as verified identity until authenticated sessions are implemented.
