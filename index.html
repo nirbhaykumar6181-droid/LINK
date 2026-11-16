@@ -111,6 +111,23 @@ dialog{border-radius:28px 28px 0 0}
 #msgs{touch-action:pan-y;overscroll-behavior:contain}
 #rpi{position:fixed;left:0;top:0;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;pointer-events:none;opacity:0;z-index:7;color:var(--m);background:var(--s);border:1px solid var(--b);box-shadow:var(--sh);will-change:transform,opacity;transition:background .15s,color .15s}
 #rpi.hit{background:var(--a);color:#fff;border-color:transparent}
+/* custom colour picker */
+.sw{flex-wrap:wrap}
+.sw i.cust{position:relative;background:conic-gradient(#ef4444,#f59e0b,#eab308,#22c55e,#06b6d4,#3b82f6,#a855f7,#ec4899,#ef4444)}
+.sw i.cust::after{content:"+";position:absolute;inset:7px;border-radius:50%;background:var(--bg);color:var(--t);display:grid;place-items:center;font-size:18px;line-height:1;font-style:normal;font-weight:600}
+#colPv{border-radius:20px;padding:16px;color:#fff;text-align:center;font-weight:600;background:#2f5bea;transition:background .1s}
+.rng{-webkit-appearance:none;appearance:none;height:28px;padding:0;border:0;background:transparent;border-radius:0}
+.rng::-webkit-slider-runnable-track{height:14px;border-radius:7px;background:var(--trk)}
+.rng::-moz-range-track{height:14px;border-radius:7px;background:var(--trk)}
+.rng::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;margin-top:-7px;border-radius:50%;background:#fff;border:3px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.45),0 0 0 1px rgba(0,0,0,.15)}
+.rng::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.45)}
+/* fits every phone */
+.pill{white-space:nowrap;flex:none;padding:8px 13px;font-size:14px}
+#home header.big{gap:8px;padding:16px 16px 8px}#home header.big h1{font-size:clamp(22px,7vw,28px);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#home.set header.big{display:none}
+@media (max-width:400px){.sw{gap:8px}.sw i{width:32px;height:32px}.sw i.cust::after{inset:6px}}
+@media (max-width:400px){#ba{font-size:0;width:36px;height:36px;padding:0;background:var(--in) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b919a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='3' width='20' height='5' rx='1'/%3E%3Cpath d='M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4'/%3E%3C/svg%3E") center/18px no-repeat}}
+@media (min-width:700px){.scr{left:calc(50% - 240px);right:calc(50% - 240px);border-left:1px solid var(--b);border-right:1px solid var(--b);background:var(--bg)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body>
 
@@ -133,7 +150,7 @@ dialog{border-radius:28px 28px 0 0}
 <section id="lock" class="scr" style="padding:32px 24px;justify-content:center;gap:14px"><h1 style="font-size:28px;flex:none" id="lh">Welcome back</h1><input id="lp" type="password" inputmode="numeric" maxlength="8" placeholder="Passcode"><div class="sub" id="le" style="color:#d92d20"></div><button class="pri" id="lu">Unlock</button></section>
 
 <section id="home" class="scr">
-<header class="big"><h1>Chats</h1><button class="pill" id="ba">Archived</button><button class="pill" id="bj">Join</button><button class="pill p" id="bn">＋ New</button></header>
+<header class="big"><h1>Chats</h1><button class="pill" id="ba" aria-label="Archived chats">Archived</button><button class="pill" id="bj">Join</button><button class="pill p" id="bn">＋ New</button></header>
 <div class="pane on" id="pc"><div style="padding:8px 20px 6px"><input id="q" placeholder="Search"></div><div id="rooms"></div></div>
 <div class="pane" id="ps"></div>
 <nav><button id="tc" class="on"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20.5l1.3-4.6A8 8 0 1 1 21 12z"/></svg><span>Chats</span></button><button id="ts"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></button></nav>
@@ -158,6 +175,13 @@ dialog{border-radius:28px 28px 0 0}
 <dialog id="dMenu"><button class="sec" id="ma">Archive chat</button><button class="sec" id="mp">Pin</button><button class="sec" id="mi">Invite link</button><button class="sec" id="md" style="color:#d92d20">Delete conversation</button><button class="sec" onclick="this.closest('dialog').close()">Close</button></dialog>
 <dialog id="dAct"><div class="sw" id="rxs" style="justify-content:space-between;margin:0"></div><button class="sec" id="aR">Reply</button><button class="sec" id="aE">Edit</button><button class="sec" id="aF">Forward</button><button class="sec" id="aC">Copy text</button><button class="sec" id="aD" style="color:#d92d20">Delete for me</button><button class="sec" id="aX" style="color:#d92d20">Delete for everyone</button></dialog>
 <dialog id="dFw"><b style="font-size:18px">Forward to</b><div id="fwl"></div><button class="sec" onclick="this.closest('dialog').close()">Cancel</button></dialog>
+<dialog id="dCol"><b style="font-size:18px">Custom colour</b>
+<div id="colPv">This is how your messages look</div>
+<label>Hue</label><input type="range" class="rng" id="colH" min="0" max="360" aria-label="Hue">
+<label>Intensity</label><input type="range" class="rng" id="colS" min="0" max="100" aria-label="Intensity">
+<label>Brightness</label><input type="range" class="rng" id="colL" min="20" max="65" aria-label="Brightness">
+<label>Hex code</label><input id="colX" maxlength="7" autocapitalize="characters" autocomplete="off" spellcheck="false" inputmode="text">
+<button class="pri" id="colOk">Use this colour</button><button class="sec" onclick="this.closest('dialog').close()" style="text-align:center">Cancel</button></dialog>
 <dialog id="dImg"><img id="big" alt="Photo"></dialog>
 
 <script>
@@ -210,7 +234,7 @@ async function sendMsg(r,x){if(x.k==='doc'){const b=x.data instanceof Blob?x.dat
   if(rep){m.reply=rep;rep=null;rpu()}
   r.msgs.push(m);if(r.msgs.length>MAX_LOCAL_MESSAGES)r.msgs.splice(0,r.msgs.length-MAX_LOCAL_MESSAGES);save();ui(1);deliver(r,m);
 }
-const learn=(r,f,n,c,x)=>{r.peers??={};const nw=!r.peers[f],q=r.peers[f]||{};r.peers[f]={...q,name:String(n||'Friend').slice(0,24),color:PAL.includes(c)?c:PAL[5]};
+const learn=(r,f,n,c,x)=>{r.peers??={};const nw=!r.peers[f],q=r.peers[f]||{};r.peers[f]={...q,name:String(n||'Friend').slice(0,24),color:/^#[0-9a-f]{6}$/i.test(c)?c:PAL[5]};
   if(x){const p=x.pic;if(typeof p==='string'&&p.length<80000&&/^data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/.test(p))r.peers[f].pic=p;else delete r.peers[f].pic;r.peers[f].user=String(x.user||'').replace(/[^a-z0-9_]/gi,'').slice(0,20);r.peers[f].bio=String(x.bio||'').slice(0,80)}return nw};
 async function handle(r,o){
   if(o.t==='ack'){const m=r.msgs.find(m=>m.id===o.ref);if(m&&m.me&&m.s!=='dlv'&&m.s!=='read')m.s='dlv';return}
@@ -345,7 +369,7 @@ function chat(force){
   el.innerHTML=h;hydrate();if(near||force)el.scrollTop=el.scrollHeight;
 }
 async function hydrate(){for(const e of document.querySelectorAll('[data-mid]')){const k=e.dataset.mid;mc[k]??=await mget(k);if(mc[k]&&e.getAttribute('src')!==mc[k])e.src=mc[k]}$('#msgs').scrollTop=$('#msgs').scrollTop}
-const sw=(el,c,cb)=>{el.innerHTML=PAL.map(x=>`<i data-c="${x}" class="${x===c?'on':''}" style="background:${x}"></i>`).join('');el.onclick=e=>{const c=e.target.dataset.c;if(c){cb(c);sw(el,c,cb)}}};
+const sw=(el,c,cb)=>{const cu=!PAL.includes(c);el.innerHTML=PAL.map(x=>`<i data-c="${x}" class="${x===c?'on':''}" style="background:${x}"></i>`).join('')+(cu?`<i data-c="${c}" class="on" style="background:${c}"></i>`:'')+`<i data-c="custom" class="cust" role="button" aria-label="Custom colour"></i>`;el.onclick=e=>{const k=e.target.dataset.c;if(!k)return;if(k==='custom')return cpick(c,x=>{cb(x);sw(el,x,cb)});cb(k);sw(el,k,cb)}};
 function sets(){
   $('#ps').innerHTML=`<div style="padding:20px;display:grid;gap:22px"><h1 style="font-size:30px">Settings</h1><div class="sec" style="display:flex;gap:14px;align-items:center">${av(st.me.name,st.me.color,st.me.pic)}<div><b>${esc(st.me.name)}</b><div class="sub">@${esc(st.me.user||'you')} · stored on this device</div></div></div><div style="display:flex;gap:10px"><button class="sec" id="spic" style="text-align:center">Change photo</button>${st.me.pic?'<button class="sec" id="spx" style="text-align:center">Remove</button>':''}</div><div><label>About you (shown on your profile)</label><input id="sbio" maxlength="80" value="${esc(st.me.bio||'')}"></div><div><label>Your name (shown to people you chat with)</label><input id="sn" value="${esc(st.me.name)}" maxlength="24"></div><div><label>Color</label><div class="sw" id="ssw"></div></div><div><label>Heading style</label><select id="sfd">${[['elegant','Elegant (Brown Sugar style)'],['classic','Classic'],['editorial','Editorial'],['marcel','Marcellus'],['clean','Clean']].map(([v,l])=>`<option value="${v}"${(st.fd||'elegant')===v?' selected':''}>${l}</option>`).join('')}</select></div><div><label>Chat text</label><select id="sfc">${[['default','Simple (default)'],['rounded','Rounded'],['humanist','Humanist'],['serif','Serif'],['classic','Classic'],['casual','Casual'],['typewriter','Typewriter'],['condensed','Condensed'],['mono','Mono']].map(([v,l])=>`<option value="${v}"${(st.fc||'default')===v?' selected':''}>${l}</option>`).join('')}</select></div><div><label>Text size</label><select id="sts">${[['s','Small'],['m','Normal'],['l','Large'],['xl','Extra large']].map(([v,l])=>`<option value="${v}"${(st.cs||'m')===v?' selected':''}>${l}</option>`).join('')}</select></div><div><label>Chat background</label><div class="sw" id="sbg" style="flex-wrap:wrap"></div><div style="display:flex;gap:10px"><button class="sec" id="sbu" style="text-align:center">Upload from gallery</button><button class="sec" id="sbr" style="text-align:center">Reset</button></div><label>Dim photo background</label><input type="range" id="sbd" min="0" max="70" value="${Math.round((st.bg&&st.bg.dim!=null?st.bg.dim:.3)*100)}"></div><div><label>Theme</label><select id="sth">${['system','light','dark'].map(t=>`<option value="${t}"${st.theme===t?' selected':''}>${t[0].toUpperCase()+t.slice(1)}</option>`).join('')}</select></div><label style="display:flex;justify-content:space-between;align-items:center;gap:12px"><span>Notifications<br><span class="sub">While LINK is open in the background</span></span><input type="checkbox" id="snt" style="width:auto"${st.notif?' checked':''}></label><label style="display:flex;justify-content:space-between;align-items:center"><span>Show message previews</span><input type="checkbox" id="spv" style="width:auto"${st.pv===0?'':' checked'}></label><label style="display:flex;justify-content:space-between;align-items:center"><span>Read receipts</span><input type="checkbox" id="srr" style="width:auto"${st.rr===0?'':' checked'}></label><label style="display:flex;justify-content:space-between;align-items:center"><span>Typing indicators</span><input type="checkbox" id="sty" style="width:auto"${st.ty===0?'':' checked'}></label><div class="sub" id="sps" style="white-space:normal"></div><button class="sec" id="spd">Test connection speed</button><button class="sec" id="sx">Back up account &amp; chats (file)</button><button class="sec" id="spin">${st.me.pin?'Change or remove passcode':'Set app passcode'}</button>${st.me.pin?'<button class="sec" id="slk">Lock now</button>':''}<button class="sec" id="sdel" style="color:#d92d20">Sign out &amp; delete all data</button><p class="sub" style="white-space:normal">Message payloads are encrypted on this device with a shared AES-256-GCM room key before relay. This is a lightweight shared-key design, not an independently audited E2EE protocol: members can impersonate another sender, and anyone holding the invite link can read the room. Invite links cannot currently be revoked. The relay stores ciphertext for up to 7 days on its configured disk. Your passcode is only a local screen lock; it does not encrypt local data. Backups include private room keys but not media. Large files are transferred in chunks and may require both people to reconnect. Do not use LINK for highly sensitive conversations until it has had an independent security audit. LINK v1.0 beta.</p></div>`;
   sw($('#ssw'),st.me.color,c=>{st.me.color=c;save();theme();Object.values(st.rooms).forEach(sendHi)});
@@ -393,7 +417,7 @@ $('#lp').onkeydown=e=>{if(e.key==='Enter')$('#lu').click()};
 $('#ogo').onclick=async()=>{const n=$('#oname').value.trim(),u=$('#ouser').value.trim().toLowerCase().replace(/^@/,''),p=$('#opin').value.trim(),er=$('#oerr');er.textContent='';
   if(!n)return $('#oname').focus();if(u&&!/^[a-z0-9_]{3,20}$/.test(u))return er.textContent='Username: 3–20 letters, numbers or _';if(p&&!/^\d{4,8}$/.test(p))return er.textContent='Passcode: 4 to 8 digits';
   st.me={id:rnd(9),name:n,user:u||n.toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,20)||'user',color:oc};if(p){const x=rnd(8);st.me.pin={s:x,h:await ph(p,x)}}unl=1;save();boot()};
-$('#tc').onclick=$('#ts').onclick=e=>{const s=e.currentTarget.id==='ts';$('#tc').classList.toggle('on',!s);$('#ts').classList.toggle('on',s);$('#pc').classList.toggle('on',!s);$('#ps').classList.toggle('on',s);if(s)sets()};
+$('#tc').onclick=$('#ts').onclick=e=>{const s=e.currentTarget.id==='ts';$('#tc').classList.toggle('on',!s);$('#ts').classList.toggle('on',s);$('#pc').classList.toggle('on',!s);$('#ps').classList.toggle('on',s);$('#home').classList.toggle('set',s);if(s)sets()};
 $('#q').oninput=list;
 $('#rooms').onclick=e=>{const b=e.target.closest('[data-r]');if(b)open(b.dataset.r)};
 $('#bn').onclick=()=>{$('#rn').value='';$('#dNew').showModal();$('#rn').focus()};
@@ -486,4 +510,18 @@ if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catc
 if('serviceWorker' in navigator && location.protocol==='https:') navigator.serviceWorker.register('/sw.js').catch(()=>{});
 
 ;(()=>{const m=$('#msgs'),j=$('#jb');if(!m||!j)return;const chk=()=>j.classList.toggle('on',m.scrollHeight-m.scrollTop-m.clientHeight>240);m.addEventListener('scroll',chk,{passive:true});j.onclick=()=>m.scrollTo({top:m.scrollHeight,behavior:'smooth'})})();
+
+;{const hsl2hex=(h,s,l)=>{s/=100;l/=100;const a=s*Math.min(l,1-l),f=n=>{const k=(n+h/30)%12,c=l-a*Math.max(Math.min(k-3,9-k,1),-1);return Math.round(255*c).toString(16).padStart(2,'0')};return'#'+f(0)+f(8)+f(4)};
+const hex2hsl=x=>{const r=parseInt(x.slice(1,3),16)/255,g=parseInt(x.slice(3,5),16)/255,b=parseInt(x.slice(5,7),16)/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2;let h=0,s=0;if(mx!==mn){const d=mx-mn;s=l>.5?d/(2-mx-mn):d/(mx+mn);h=mx===r?(g-b)/d+(g<b?6:0):mx===g?(b-r)/d+2:(r-g)/d+4;h*=60}return[Math.round(h),Math.round(s*100),Math.round(l*100)]};
+const H=$('#colH'),S=$('#colS'),L=$('#colL'),X=$('#colX'),D=$('#dCol');let done=null;
+const clampL=l=>Math.min(65,Math.max(20,l));
+const paint=()=>{const h=+H.value,s=+S.value,l=+L.value,x=hsl2hex(h,s,l);$('#colPv').style.background=x;X.value=x.toUpperCase();
+  H.style.setProperty('--trk','linear-gradient(90deg,'+[0,60,120,180,240,300,360].map(k=>hsl2hex(k,90,50)).join(',')+')');
+  S.style.setProperty('--trk',`linear-gradient(90deg,${hsl2hex(h,0,l)},${hsl2hex(h,100,l)})`);
+  L.style.setProperty('--trk',`linear-gradient(90deg,${hsl2hex(h,s,20)},${hsl2hex(h,s,65)})`)};
+const load=x=>{const[h,s,l]=hex2hsl(x);H.value=h;S.value=s;L.value=clampL(l)};
+window.cpick=(init,cb)=>{load(/^#[0-9a-f]{6}$/i.test(init)?init:PAL[0]);done=cb;paint();D.showModal()};
+[H,S,L].forEach(i=>i.oninput=paint);
+X.oninput=()=>{let v=X.value.trim();if(v[0]!=='#')v='#'+v;if(/^#[0-9a-f]{6}$/i.test(v)){load(v);const keep=X.selectionStart;paint();try{X.setSelectionRange(keep,keep)}catch{}}};
+$('#colOk').onclick=()=>{const x=hsl2hex(+H.value,+S.value,+L.value);D.close();done&&done(x)}}
 </script></body></html>

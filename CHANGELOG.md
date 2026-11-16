@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.3.2
+
+- Custom colour picker (hue, intensity, brightness sliders and hex code) beside the preset colours, for onboarding and Settings. Custom colours are shared with chat partners. Brightness is limited so white message text stays readable.
+- Fixed the Chats header on small phones: the New button no longer wraps, Archived becomes an icon on narrow screens, and the header is hidden on the Settings tab.
+- Colour swatches wrap on narrow screens; on tablets and desktops the app is centred in a phone-width column.
+
 ## v1.3.1
 
 - Less glitchy: removed all blur/backdrop effects, the fixed background gradient, glow shadows and the per-message entry animation that flickered on every update.
