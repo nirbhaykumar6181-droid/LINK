@@ -51,6 +51,7 @@ try {
 const live = new Map();          // roomId -> Set<ServerResponse> (open event streams)
 const ephemeral = new Set();     // rooms announced by a ping but without stored events yet
 const rates = new Map();
+const aiRates = new Map();
 let totalClients = 0;
 let shuttingDown = false;
 
@@ -170,6 +171,64 @@ const server = http.createServer((req, res) => {
     const rs = fs.createReadStream(tmp);
     const done = () => fs.rm(tmp, { force: true }, () => {});
     rs.on('close', done); res.on('close', done); rs.pipe(res);
+    return;
+  }
+
+  // LINK AI: prompts are forwarded to Hugging Face; no AI prompt or reply is stored on this server.
+  if (url.pathname === '/api/ai/chat' && req.method === 'POST') {
+    const token = process.env.HF_TOKEN || '';
+    if (!token) return json(res, 503, { ok: false, error: 'LINK AI is not configured yet. Add HF_TOKEN in the server environment.' });
+    const ip = (TRUST_PROXY ? String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() : '') || req.socket.remoteAddress || 'unknown';
+    const now = Date.now();
+    let bucket = aiRates.get(ip);
+    if (!bucket || now - bucket.start >= 60_000) bucket = { start: now, count: 0 };
+    bucket.count++; aiRates.set(ip, bucket);
+    if (aiRates.size > 10000) for (const [k, v] of aiRates) if (now - v.start > 120_000) aiRates.delete(k);
+    if (bucket.count > 8) return json(res, 429, { ok: false, error: 'AI is being used a lot right now. Please wait a minute and try again.' }, { 'Retry-After': '60' });
+
+    let body = '', tooLarge = false;
+    req.on('data', c => { body += c; if (body.length > 24 * 1024) tooLarge = true; });
+    req.on('end', async () => {
+      if (tooLarge) return json(res, 413, { ok: false, error: 'This conversation is too long. Start a new chat or shorten your message.' });
+      let input; try { input = JSON.parse(body); } catch { return json(res, 400, { ok: false, error: 'Invalid AI request.' }); }
+      const allowedModes = new Set(['general', 'student', 'writing', 'coding']);
+      const mode = allowedModes.has(input.mode) ? input.mode : 'general';
+      if (!Array.isArray(input.messages) || input.messages.length < 1 || input.messages.length > 12) return json(res, 400, { ok: false, error: 'Send between 1 and 12 recent messages.' });
+      const messages = [];
+      for (const m of input.messages) {
+        if (!m || !['user', 'assistant'].includes(m.role) || typeof m.content !== 'string' || !m.content.trim() || m.content.length > 5000)
+          return json(res, 400, { ok: false, error: 'One of the messages is invalid or too long.' });
+        messages.push({ role: m.role, content: m.content.trim() });
+      }
+      const prompts = {
+        general: 'You are LINK AI, a friendly, thoughtful everyday assistant. Be clear, honest, age-appropriate and practical. If unsure, say so. Do not claim to have browsed the web.',
+        student: 'You are LINK AI in Student mode. Teach patiently at the learner’s level, explain steps, encourage understanding, and help with revision, notes and practice. Do not simply invent facts; say when you are unsure.',
+        writing: 'You are LINK AI in Writing mode. Help draft, rewrite, proofread and brainstorm. Preserve the user’s intended meaning and explain important edits briefly when useful.',
+        coding: 'You are LINK AI in Coding mode. Give correct, readable code, explain assumptions, and include safe implementation guidance. Do not claim code was tested unless it was.'
+      };
+      try {
+        const upstream = await fetch('https://router.huggingface.co/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model: process.env.HF_MODEL || 'openai/gpt-oss-120b:fastest', messages: [{ role: 'system', content: prompts[mode] }, ...messages], temperature: 0.6, max_tokens: 700 }),
+          signal: AbortSignal.timeout(45_000)
+        });
+        const data = await upstream.json().catch(() => ({}));
+        if (!upstream.ok) {
+          const detail = typeof data.error === 'string' ? data.error : '';
+          console.error('Hugging Face AI request failed:', upstream.status, detail.slice(0, 300));
+          const status = upstream.status === 401 || upstream.status === 403 ? 502 : upstream.status === 429 ? 429 : 502;
+          const msg = upstream.status === 402 ? 'LINK AI free monthly credits are exhausted. It will be available again when the allowance renews; no purchase is required.' : upstream.status === 429 ? 'The AI provider is busy or its request limit was reached. Please try again later.' : upstream.status === 401 || upstream.status === 403 ? 'The AI token was rejected. Check the HF_TOKEN value and its Inference permission in Render.' : 'The AI provider could not complete this request. Please try again shortly.';
+          return json(res, status, { ok: false, error: msg });
+        }
+        const answer = data?.choices?.[0]?.message?.content;
+        if (typeof answer !== 'string' || !answer.trim()) return json(res, 502, { ok: false, error: 'The AI provider returned an empty response. Please try again.' });
+        return json(res, 200, { ok: true, answer: answer.trim(), model: process.env.HF_MODEL || 'openai/gpt-oss-120b:fastest' });
+      } catch (e) {
+        console.error('Hugging Face AI connection error:', e.name, e.message);
+        return json(res, 504, { ok: false, error: e.name === 'TimeoutError' ? 'The AI took too long to respond. Please try again.' : 'Could not connect to the AI provider. Please try again.' });
+      }
+    });
     return;
   }
 

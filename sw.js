@@ -1,4 +1,4 @@
-const CACHE = 'link-shell-v1.4.0-a7';
+const CACHE = 'link-shell-v1.4.0-a8';
 const SHELL = ['/', '/manifest.webmanifest', '/icon.svg'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));

@@ -1,8 +1,8 @@
 {
   "name": "link-private-chat",
-  "version": "1.4.0-alpha.7",
+  "version": "1.4.0-alpha.8",
   "private": true,
-  "description": "LINK lightweight encrypted-chat beta",
+  "description": "LINK private chat with a separate AI companion",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
