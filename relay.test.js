@@ -55,3 +55,16 @@ test('relay health, validation, event delivery and persistence', async t => {
   await reader.cancel();
   controller.abort();
 });
+
+test('username registry claims, re-confirms, rejects and releases names', async t => {
+  const srv = await startServer();
+  t.after(async () => { await srv.stop(); fs.rmSync(srv.dir, { recursive: true, force: true }); });
+  const tok = 'abcdefghijklmnop1234', u = `${srv.base}/u/alex.one`;
+  assert.equal((await (await fetch(u)).json()).free, true);
+  assert.equal((await fetch(u, { method: 'POST', body: tok })).status, 200);
+  assert.equal((await fetch(u, { method: 'POST', body: tok })).status, 200);
+  assert.equal((await fetch(u, { method: 'POST', body: 'someone-else-token-99' })).status, 409);
+  assert.equal((await fetch(`${srv.base}/u/bad..name`, { method: 'POST', body: tok })).status, 400);
+  assert.equal((await fetch(u, { method: 'DELETE', body: tok })).status, 204);
+  assert.equal((await (await fetch(u)).json()).free, true);
+});

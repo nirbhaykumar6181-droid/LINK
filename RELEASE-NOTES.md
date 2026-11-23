@@ -13,3 +13,11 @@
 ## Verification
 
 Run `npm run check` from this directory. A successful run checks server syntax and executes the relay test suite.
+
+## UI redesign + friends (unofficial build on 0.9)
+
+- New modern interface (glass header, floating composer and tab bar, swipe-to-reply, custom colour picker).
+- Unique usernames (letters, numbers, `_` and periods) reserved on the relay via `/u/<name>`; the relay stores only a hash of a secret token, and clients re-claim their name on launch.
+- Friend QR code / link: scanning sends an encrypted friend request to the owner's personal inbox; accepting creates a private room with a fresh key. "Reset my QR code" rotates the inbox.
+- In-app QR scanner uses the browser's BarcodeDetector (Chrome on Android); other browsers can open the QR link from the camera app or paste it under Join.
+- Relay now sends `Permissions-Policy: camera=(self)` so the scanner can open the camera.

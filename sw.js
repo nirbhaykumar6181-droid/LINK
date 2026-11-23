@@ -1,4 +1,4 @@
-const CACHE = 'link-shell-v0.9-ui';
+const CACHE = 'link-shell-v1.0-friends';
 const SHELL = ['/', '/manifest.webmanifest'];
 self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL))));
 self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))));

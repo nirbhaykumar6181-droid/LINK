@@ -17,6 +17,11 @@ const MAX_ROOMS = 10000;
 const RATE_WINDOW = 60_000;
 const RATE_MAX = 180;
 const TRUST_PROXY = process.env.LINK_TRUST_PROXY === '1';
+const USERS_FILE = path.join(DATA_DIR, 'users.json');
+const USER_RE = /^(?=.{3,20}$)[a-z0-9_]+(?:\.[a-z0-9_]+)*$/;
+const RESERVED = new Set(['admin', 'link', 'support', 'root', 'system', 'help', 'official']);
+const MAX_USERS = 100000;
+const users = new Map();
 const rooms = new Map();
 const rates = new Map();
 
@@ -40,6 +45,37 @@ function persist() {
     fs.renameSync(tmp, DB_FILE);
   } catch (e) { console.error('Persistence error:', e.message); }
 }
+function loadUsers() {
+  try { for (const [n, h] of Object.entries(JSON.parse(fs.readFileSync(USERS_FILE, 'utf8')))) if (USER_RE.test(n) && /^[0-9a-f]{64}$/.test(h)) users.set(n, h); }
+  catch (e) { if (e.code !== 'ENOENT') console.error('Could not load usernames:', e.message); }
+}
+function persistUsers() {
+  try {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+    const tmp = USERS_FILE + '.' + process.pid + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify(Object.fromEntries(users)), { mode: 0o600 });
+    fs.renameSync(tmp, USERS_FILE);
+  } catch (e) { console.error('Username persistence error:', e.message); }
+}
+// Username registry: GET /u/<name> -> {free}; POST claims (or re-confirms) with a secret token; DELETE releases it.
+// Only a SHA-256 of the token is stored, so a lost server disk can be healed by the client re-claiming the same name.
+function handleUser(req, res, name) {
+  const ok = USER_RE.test(name) && !RESERVED.has(name);
+  const reply = (code, obj) => { headers(res); res.writeHead(code); res.end(obj ? JSON.stringify(obj) : undefined); };
+  if (req.method === 'GET') return reply(200, { free: ok && !users.has(name), valid: ok });
+  if (req.method !== 'POST' && req.method !== 'DELETE') { headers(res); res.writeHead(405, { Allow: 'GET, POST, DELETE' }); return res.end(); }
+  let body = '', big = false;
+  req.on('data', c => { body += c.toString('utf8'); if (body.length > 200) { big = true; body = ''; req.destroy(); } });
+  req.on('end', () => {
+    if (big || !ok || !/^[\w-]{16,64}$/.test(body)) return reply(400, { error: 'Invalid username or token.' });
+    const h = crypto.createHash('sha256').update(body).digest('hex'), cur = users.get(name);
+    const same = cur && crypto.timingSafeEqual(Buffer.from(cur), Buffer.from(h));
+    if (req.method === 'DELETE') { if (cur && !same) return reply(403, { error: 'Not your username.' }); if (cur) { users.delete(name); persistUsers(); } return reply(204); }
+    if (cur) return same ? reply(200, { ok: true }) : reply(409, { error: 'That username is taken.' });
+    if (users.size >= MAX_USERS) return reply(503, { error: 'Username limit reached.' });
+    users.set(name, h); persistUsers(); return reply(200, { ok: true });
+  });
+}
 function getRoom(id) {
   let r = rooms.get(id);
   if (!r && rooms.size >= MAX_ROOMS) return null;
@@ -53,7 +89,7 @@ function headers(res, type = 'application/json; charset=utf-8') {
   res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
   res.setHeader('Cache-Control', 'no-store');
   res.setHeader('X-Frame-Options', 'DENY');
-  res.setHeader('Permissions-Policy', 'camera=(), geolocation=(), payment=()');
+  res.setHeader('Permissions-Policy', 'camera=(self), geolocation=(), payment=()');
 }
 function rateLimit(req, res) {
   // Only trust forwarded client IP headers when the app is behind a proxy you control.
@@ -69,11 +105,14 @@ function sendEvent(client, event) { if (!client.destroyed) client.write(`id: ${e
 function safeEqualPayload(s) { return typeof s === 'string' && s.length > 0 && s.length <= MAX_BODY && /^[A-Za-z0-9_-]+$/.test(s); }
 
 load();
+loadUsers();
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://link.local');
   if (url.pathname === '/health') {
     headers(res); res.writeHead(200); return res.end(JSON.stringify({ ok: true, rooms: rooms.size, version: '0.9.0' }));
   }
+  const um = url.pathname.match(/^\/u\/([a-z0-9_.]{1,40})$/);
+  if (um) { if (!rateLimit(req, res)) return; return handleUser(req, res, um[1]); }
   const match = url.pathname.match(/^\/(s|p)\/([\w-]{8,64})$/);
   if (!match) {
     if (req.method === 'GET' && (url.pathname === '/' || url.pathname === '/index.html')) {
