@@ -33,7 +33,7 @@ test('relay health, validation, event delivery and persistence', async t => {
   const id = 'room-test-12345678';
   const health = await (await fetch(srv.base + '/health')).json();
   assert.equal(health.ok, true);
-  assert.equal(health.version, '0.9.0');
+  assert.equal(health.version, '1.0.0');
 
   const invalid = await fetch(`${srv.base}/p/${id}`, { method: 'POST', body: 'not encrypted JSON!' });
   assert.equal(invalid.status, 400);
@@ -67,4 +67,25 @@ test('username registry claims, re-confirms, rejects and releases names', async 
   assert.equal((await fetch(`${srv.base}/u/bad..name`, { method: 'POST', body: tok })).status, 400);
   assert.equal((await fetch(u, { method: 'DELETE', body: tok })).status, 204);
   assert.equal((await (await fetch(u)).json()).free, true);
+});
+
+
+test('push configuration endpoint is safe when VAPID is not configured', async t => {
+  const srv = await startServer();
+  t.after(async () => { await srv.stop(); fs.rmSync(srv.dir, { recursive: true, force: true }); });
+  const cfg = await (await fetch(srv.base + '/push-key')).json();
+  assert.equal(cfg.enabled, false);
+  assert.equal(cfg.publicKey, '');
+  const response = await fetch(srv.base + '/push/room-test-12345678', { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({subscription:{}}) });
+  assert.equal(response.status, 503);
+});
+
+
+test('frontend inline JavaScript and service worker parse', async () => {
+  const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+  const start = html.lastIndexOf('<script>') + '<script>'.length;
+  const end = html.lastIndexOf('</script>');
+  assert.ok(start > 0 && end > start);
+  assert.doesNotThrow(() => new Function(html.slice(start, end)));
+  assert.doesNotThrow(() => new Function(fs.readFileSync(path.join(__dirname, '..', 'sw.js'), 'utf8')));
 });

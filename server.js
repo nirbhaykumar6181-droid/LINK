@@ -1,10 +1,11 @@
 'use strict';
-// LINK v0.9 relay. Payloads are opaque client-encrypted strings; the relay cannot decrypt them.
+// LINK 1.0 relay. Payloads are opaque client-encrypted strings; the relay cannot decrypt them.
 // Persistent room logs require a persistent writable disk in production.
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+let webPush = null; try { webPush = require('web-push'); } catch {}
 
 const PORT = Number(process.env.PORT || 3000);
 const DATA_DIR = process.env.LINK_DATA_DIR || path.join(__dirname, 'data');
@@ -18,6 +19,12 @@ const RATE_WINDOW = 60_000;
 const RATE_MAX = 180;
 const TRUST_PROXY = process.env.LINK_TRUST_PROXY === '1';
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
+const PUSH_FILE = path.join(DATA_DIR, 'push.json');
+const VAPID_PUBLIC = process.env.VAPID_PUBLIC_KEY || '';
+const VAPID_PRIVATE = process.env.VAPID_PRIVATE_KEY || '';
+const VAPID_SUBJECT = process.env.VAPID_SUBJECT || 'mailto:admin@example.com';
+const pushSubs = new Map();
+if (webPush && VAPID_PUBLIC && VAPID_PRIVATE) { try { webPush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC, VAPID_PRIVATE); } catch (e) { console.error('Invalid VAPID configuration:', e.message); webPush = null; } } else webPush = null;
 const USER_RE = /^(?=.{3,20}$)[a-z0-9_]+(?:\.[a-z0-9_]+)*$/;
 const RESERVED = new Set(['admin', 'link', 'support', 'root', 'system', 'help', 'official']);
 const MAX_USERS = 100000;
@@ -45,6 +52,8 @@ function persist() {
     fs.renameSync(tmp, DB_FILE);
   } catch (e) { console.error('Persistence error:', e.message); }
 }
+function loadPush() { try { const data=JSON.parse(fs.readFileSync(PUSH_FILE,'utf8')); for(const [id,subs] of Object.entries(data)) if(/^[\w-]{8,64}$/.test(id)&&Array.isArray(subs)) pushSubs.set(id,subs.filter(s=>s&&typeof s.endpoint==='string'&&s.keys&&typeof s.keys.p256dh==='string'&&typeof s.keys.auth==='string')); } catch(e){if(e.code!=='ENOENT')console.error('Could not load push subscriptions:',e.message)} }
+function persistPush(){try{fs.mkdirSync(DATA_DIR,{recursive:true});const tmp=PUSH_FILE+'.'+process.pid+'.tmp';fs.writeFileSync(tmp,JSON.stringify(Object.fromEntries(pushSubs)),{mode:0o600});fs.renameSync(tmp,PUSH_FILE)}catch(e){console.error('Push persistence error:',e.message)}}
 function loadUsers() {
   try { for (const [n, h] of Object.entries(JSON.parse(fs.readFileSync(USERS_FILE, 'utf8')))) if (USER_RE.test(n) && /^[0-9a-f]{64}$/.test(h)) users.set(n, h); }
   catch (e) { if (e.code !== 'ENOENT') console.error('Could not load usernames:', e.message); }
@@ -76,6 +85,18 @@ function handleUser(req, res, name) {
     users.set(name, h); persistUsers(); return reply(200, { ok: true });
   });
 }
+function handlePush(req,res,roomId){
+  const reply=(code,obj)=>{headers(res);res.writeHead(code);res.end(obj?JSON.stringify(obj):undefined)};
+  if(!webPush){return reply(503,{error:'Push notifications are not configured.'})}
+  if(!['PUT','DELETE'].includes(req.method)){headers(res);res.writeHead(405,{Allow:'PUT, DELETE'});return res.end()}
+  let body='',too=false;req.on('data',c=>{body+=c.toString('utf8');if(body.length>16384){too=true;body=''}});req.on('end',()=>{
+    if(too)return reply(413,{error:'Subscription payload too large.'});let obj;try{obj=JSON.parse(body||'{}')}catch{return reply(400,{error:'Invalid JSON.'})}
+    const list=pushSubs.get(roomId)||[];
+    if(req.method==='PUT'){const sub=obj.subscription;if(!sub||typeof sub.endpoint!=='string'||!sub.endpoint.startsWith('https://')||!sub.keys||typeof sub.keys.p256dh!=='string'||typeof sub.keys.auth!=='string')return reply(400,{error:'Invalid Web Push subscription.'});const next=list.filter(x=>x.endpoint!==sub.endpoint);next.push(sub);pushSubs.set(roomId,next.slice(-30));persistPush();return reply(204)}
+    const endpoint=typeof obj.endpoint==='string'?obj.endpoint:'';pushSubs.set(roomId,list.filter(x=>x.endpoint!==endpoint));persistPush();return reply(204)
+  })
+}
+async function pushRoom(roomId){if(!webPush)return;const list=pushSubs.get(roomId)||[];if(!list.length)return;const payload=JSON.stringify({title:'LINK',body:'New message',room:roomId});const keep=[];for(const sub of list){try{await webPush.sendNotification(sub,payload,{TTL:60,urgency:'normal'});keep.push(sub)}catch(e){if(e.statusCode!==404&&e.statusCode!==410)keep.push(sub);else console.warn('Removing expired push subscription')}}if(keep.length!==list.length){pushSubs.set(roomId,keep);persistPush()}}
 function getRoom(id) {
   let r = rooms.get(id);
   if (!r && rooms.size >= MAX_ROOMS) return null;
@@ -106,11 +127,15 @@ function safeEqualPayload(s) { return typeof s === 'string' && s.length > 0 && s
 
 load();
 loadUsers();
+loadPush();
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://link.local');
   if (url.pathname === '/health') {
-    headers(res); res.writeHead(200); return res.end(JSON.stringify({ ok: true, rooms: rooms.size, version: '0.9.0' }));
+    headers(res); res.writeHead(200); return res.end(JSON.stringify({ ok: true, rooms: rooms.size, version: '1.0.0', push: !!webPush }));
   }
+  if (url.pathname === '/push-key' && req.method === 'GET') { headers(res); res.writeHead(200); return res.end(JSON.stringify({enabled:!!webPush, publicKey:webPush?VAPID_PUBLIC:''})); }
+  const pm = url.pathname.match(/^\/push\/([\w-]{8,64})$/);
+  if(pm){ if(!rateLimit(req,res))return; return handlePush(req,res,pm[1]); }
   const um = url.pathname.match(/^\/u\/([a-z0-9_.]{1,40})$/);
   if (um) { if (!rateLimit(req, res)) return; return handleUser(req, res, um[1]); }
   const match = url.pathname.match(/^\/(s|p)\/([\w-]{8,64})$/);
@@ -169,6 +194,7 @@ const server = http.createServer((req, res) => {
     for (let i = r.log.length - 1; i >= 0; i--) { bytes += r.log[i].data.length; if (bytes > MAX_ROOM_BYTES) r.log.splice(0, i + 1); }
     for (const client of r.clients) sendEvent(client, event);
     persist();
+    pushRoom(id).catch(e=>console.error('Push delivery error:',e.message));
     headers(res); res.writeHead(200); return res.end(JSON.stringify({ seq: event.seq }));
   });
 });

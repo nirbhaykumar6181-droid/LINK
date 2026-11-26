@@ -21,3 +21,15 @@ Run `npm run check` from this directory. A successful run checks server syntax a
 - Friend QR code / link: scanning sends an encrypted friend request to the owner's personal inbox; accepting creates a private room with a fresh key. "Reset my QR code" rotates the inbox.
 - In-app QR scanner uses the browser's BarcodeDetector (Chrome on Android); other browsers can open the QR link from the camera app or paste it under Join.
 - Relay now sends `Permissions-Policy: camera=(self)` so the scanner can open the camera.
+
+
+## LINK 1.0.0 enhancement build
+
+- Added encrypted backup export/import (PBKDF2 and AES-GCM; media excluded).
+- Added Friends tab, local mute/block toggles, and profile safety-code comparison.
+- Added client-side disappearing timers and local message pins.
+- Added optional generic Web Push setup with room subscriptions and no message contents in notifications.
+- Updated service worker cache version and documentation.
+- Render blueprint already declares persistent disk storage; verify actual deployed configuration.
+
+Known limitations: push requires VAPID keys and `web-push`; group-admin enforcement and member removal are not implemented securely; disappearing timers do not erase server-side encrypted relay history; safety-code display is manual verification only; no audio/video calling is present in this source ZIP.

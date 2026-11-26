@@ -1,6 +1,6 @@
-# LINK Web — Release Candidate 0.9
+# LINK Web — Enhancement build 1.0.0
 
-A lightweight browser-based messaging prototype with local profiles, invite-link rooms, browser-side AES-256-GCM message encryption, text/media messages, voice notes, file transfer, replies, reactions, forwarding, read receipts, typing indicators, local backup/restore, chat search, pinning, archive, themes and PWA shell caching.
+A lightweight browser-based messaging beta with local profiles, invite-link rooms, browser-side AES-256-GCM payload encryption, text/media messages, voice notes, file transfer, replies, reactions, forwarding, read receipts, typing indicators, password-encrypted backup/restore, chat search, local pinning, archive, themes and PWA shell caching.
 
 > **Release status: beta / release candidate.** This package is suitable for controlled testing, not for sensitive conversations or an unrestricted public launch. Read `SECURITY.md` before deploying.
 
@@ -30,6 +30,26 @@ The included `render.yaml` is a reference blueprint using a paid persistent disk
 
 The relay persists encrypted event payloads in an atomic JSON store. It retains events for up to seven days, with per-room event and payload-size limits. Typing events are transient. The relay cannot decrypt message bodies. Back up the `LINK_DATA_DIR` contents securely; the stored payloads are encrypted but room metadata and traffic patterns are not hidden.
 
+## New enhancement build
+
+- Password-encrypted JSON account/chat backup using PBKDF2 + AES-GCM (media is not included).
+- Friends tab with contact shortcuts and local mute/block controls.
+- Per-room disappearing-message timer (client-side expiration; relay's encrypted history retention is not shortened).
+- Local message pinning.
+- Manual safety-code comparison derived from each room key (not a formal identity-authentication protocol).
+- Optional generic Web Push notifications; push payloads contain only “New message” and a room ID, never message content.
+- Render blueprint already declares a 1 GB persistent disk at `/var/data`; verify the deployed service is using this blueprint.
+
+### Configure Web Push
+
+1. Install dependencies (`npm install`, which installs `web-push`).
+2. Generate VAPID keys with `npx web-push generate-vapid-keys`.
+3. Set `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, and `VAPID_SUBJECT` (a contact URL such as `mailto:owner@example.com`) in the hosting environment.
+4. Deploy. `/push-key` should report `enabled: true`.
+5. In LINK Settings, enable background push notifications. The user must grant browser notification permission.
+
+Push subscription records are stored in `push.json` under `LINK_DATA_DIR`. Notifications are generic by design.
+
 ## Included features
 
 - Browser-side AES-256-GCM encryption for message payloads
@@ -45,4 +65,4 @@ The relay persists encrypted event payloads in an atomic JSON store. It retains 
 
 ## Not included
 
-No server-backed accounts, verified identity, invite revocation, multi-device sync, group administration, audio/video calls, background push delivery, encrypted backup password, abuse-report workflow, or independently audited E2EE protocol. These are not implied by the current interface or encryption implementation.
+No verified identity, invite revocation, multi-device sync, enforceable group-admin removal, audio/video calling in this ZIP, abuse-report workflow, or independently audited E2EE protocol. Group room names, message pins, blocks, mutes, and disappearing timers are local/client-side controls. Push requires VAPID configuration. Safety-code comparison is manual and does not guarantee identity. These are not implied by the current interface or encryption implementation.

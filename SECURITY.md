@@ -10,10 +10,12 @@ The browser encrypts message payloads with AES-256-GCM. The room key is carried 
 
 - Anyone who obtains a room invite link can access the room and its decryption key. There is no invite revocation or verified participant identity.
 - The optional passcode is a local UI lock, not encryption-at-rest. Local browser storage and backup files contain room keys.
-- Backup files do not include media and are not protected by a backup password. Treat them as secrets.
+- Encrypted backups now use PBKDF2 + AES-GCM; media is excluded. A lost backup password cannot be recovered.
+- Disappearing-message timers only delete messages from local client views; the relay may retain encrypted event history for up to seven days.
+- Manual safety codes are key fingerprints users can compare out-of-band, not a formal identity-verification protocol.
 - The JSON persistence layer is intended for a small single-instance beta. It is not a horizontally scalable database and concurrent multiple server instances must not share this file store.
 - Rate limiting is process-local and basic. Use an appropriate edge firewall/WAF, monitoring and abuse controls before public exposure.
-- Background delivery depends on browser behavior; the service worker caches the app shell only.
+- Web Push is optional and requires VAPID environment keys; push notification content is generic. Browser/platform delivery is not guaranteed.
 - There is no independent security audit, penetration test, formal threat model or incident response process.
 
 ## Before public launch

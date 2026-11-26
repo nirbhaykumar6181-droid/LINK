@@ -1,6 +1,6 @@
 {
   "name": "link-web",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "private": true,
   "description": "LINK private messaging web app and relay",
   "scripts": {
@@ -8,5 +8,10 @@
     "check": "node --check server.js && node --test",
     "test": "node --test"
   },
-  "engines": { "node": ">=18" }
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "web-push": "^3.6.7"
+  }
 }
