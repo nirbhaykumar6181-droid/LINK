@@ -66,3 +66,6 @@ Push subscription records are stored in `push.json` under `LINK_DATA_DIR`. Notif
 ## Not included
 
 No verified identity, invite revocation, multi-device sync, enforceable group-admin removal, audio/video calling in this ZIP, abuse-report workflow, or independently audited E2EE protocol. Group room names, message pins, blocks, mutes, and disappearing timers are local/client-side controls. Push requires VAPID configuration. Safety-code comparison is manual and does not guarantee identity. These are not implied by the current interface or encryption implementation.
+
+## Font note
+The UI currently includes Cokenvat Demo (`fonts/CokenvatDemo.otf`). The font package states that this demo is for **personal use only**. Obtain the appropriate commercial license from the font creator before distributing or selling LINK with this font included.
