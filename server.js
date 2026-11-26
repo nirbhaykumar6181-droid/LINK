@@ -164,6 +164,8 @@ const server = http.createServer((req, res) => {
     headers(res, 'text/event-stream; charset=utf-8');
     res.setHeader('Cache-Control', 'no-cache, no-transform'); res.setHeader('Connection', 'keep-alive'); res.setHeader('X-Accel-Buffering', 'no');
     res.writeHead(200);
+    // Tell browsers to retry quickly and flush the stream immediately.
+    res.write('retry: 1200\n: connected\n\n');
     const afterRaw = req.headers['last-event-id'] || url.searchParams.get('after') || '0';
     const after = Number(afterRaw);
     if (Number.isFinite(after) && after >= 0) r.log.filter(e => e.seq > after).forEach(e => sendEvent(res, e));

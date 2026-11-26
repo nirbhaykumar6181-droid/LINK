@@ -50,8 +50,15 @@ test('relay health, validation, event delivery and persistence', async t => {
   const response = await streamPromise;
   assert.equal(response.status, 200);
   const reader = response.body.getReader();
-  const chunk = await Promise.race([reader.read(), wait(1500).then(() => { throw new Error('No replayed event'); })]);
-  assert.match(new TextDecoder().decode(chunk.value), new RegExp(payload));
+  const decoder = new TextDecoder();
+  let received = '';
+  for (let i = 0; i < 4 && !received.includes(payload); i++) {
+    const chunk = await Promise.race([reader.read(), wait(1500).then(() => { throw new Error('No replayed event'); })]);
+    received += decoder.decode(chunk.value);
+  }
+  assert.match(received, /retry: 1200/);
+  assert.match(received, /: connected/);
+  assert.match(received, new RegExp(payload));
   await reader.cancel();
   controller.abort();
 });

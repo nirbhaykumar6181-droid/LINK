@@ -33,3 +33,9 @@ Run `npm run check` from this directory. A successful run checks server syntax a
 - Render blueprint already declares persistent disk storage; verify actual deployed configuration.
 
 Known limitations: push requires VAPID keys and `web-push`; group-admin enforcement and member removal are not implemented securely; disappearing timers do not erase server-side encrypted relay history; safety-code display is manual verification only; no audio/video calling is present in this source ZIP.
+
+## Connection responsiveness patch
+- SSE streams now advertise a 1.2-second reconnect interval instead of relying on browser defaults.
+- The relay immediately flushes a lightweight stream handshake so clients can detect a live connection promptly.
+- Friend-request inbox connections are reused when already connecting/open, avoiding unnecessary reconnect churn; forced recovery still recreates them.
+- These changes improve reconnect responsiveness but cannot eliminate latency from Render/network cold starts.
