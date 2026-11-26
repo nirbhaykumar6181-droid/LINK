@@ -1,8 +1,8 @@
 {
   "name": "link-web",
-  "version": "1.0.0",
+  "version": "1.4.0",
   "private": true,
-  "description": "LINK private messaging web app and relay",
+  "description": "LINK browser messaging beta and relay \u2014 ownership-transfer handoff package",
   "scripts": {
     "start": "node server.js",
     "check": "node --check server.js && node --test",
